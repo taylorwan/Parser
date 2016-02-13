@@ -77,11 +77,8 @@ class Attributes(object):
         self.classIndex = 0
         self.hasNominalAttributes = False
         self.hasNumericAttributes = False
-        if __name__ == "__main__":
-            self.main()
 
     def __str__(self):
-        # return "{}".format(", ".join(self.attributes))
         l = []
         for a in self.attributes:
             l.append(str(a))
@@ -94,7 +91,6 @@ class Attributes(object):
         return len(self.attributes)
 
     def get(self, i):  # error if the index is out of bounds
-        # try:
         return self.attributes[i]
 
     def getHasNominalAttributes(self):
@@ -108,7 +104,6 @@ class Attributes(object):
 
     def getIndex(self, name):  # error if the name is illegal
         try:
-            # return self.attributes.index(name)
             for i, a in enumerate(self.attributes):
                 if a.name == name:
                     return i
@@ -130,40 +125,42 @@ class Attributes(object):
         return attribute
 
     def parse(self, scanner):  # error if a parse error occurs
-        # if scanner exists
-        # while scanner:
-        #     self.add(scanner.read())
-        for s in scanner:
-            print s
-            self.add(s)
+        # for s in scanner:
+        #     print s
+        #     self.add(s)
+        # self.setClassIndex(self.getSize()-1)
+        m = AttributeFactory()
+        s = m.make(scanner)
+        print s
+        self.attributes.append(s)
         self.setClassIndex(self.getSize()-1)
-        # self.attributes = scanner.split(" ")  # some random delimiter
 
     def main(self):
         print
         print "Attributes::main"
-        a = NominalAttribute("hey")
-        # a.addValue("greeting")
-        a.addValue("informal")
-        b = NominalAttribute("hello")
-        b.addValue("greeting")
-        l = [a, b]
-        print "l: {}".format(l)
-        print "self.parse(l): {}".format(self.parse(l))
+        lines = "@attribute make trek bridgestone cannondale nishiki garyfisher\n@attribute tires knobby treads\n@attribute bars straight curved\n@attribute bottles y n\n@attribute weight numeric\n@attribute type mountain hybrid"
+        for line in lines.split("\n"):
+            self.parse(line)
         print "self: {}".format(self)
-        print "self.getSize(): {}".format(self.getSize())
-        print "self.get(0): {}".format(self.get(0))
-        print "self.getHasNominalAttributes(): {}".format(self.getHasNominalAttributes())
-        print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
-        print "self.getIndex(\"hey\"): {}".format(self.getIndex("hey"))
-        print "self.getClassIndex(): {}".format(self.getClassIndex())
-        print "self.get(getClassIndex()): {}".format(self.get(self.getClassIndex()))
-        print "self.getClassAttribute(): {}".format(self.getClassAttribute())
-        print "self.setClassIndex(0): {}".format(self.setClassIndex(0))
-        print "self.add(NumericAttribute(\"num\")): {}".format(self.add(NumericAttribute("num")))
-        print "self: {}".format(self)
-        print "self.getIndex(\"num\")): {}".format(self.getIndex("num"))
-        print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
+        # b = NominalAttribute("hello")
+        # b.addValue("greeting")
+        # l = [b]
+        # print "l: {}".format(l)
+        # print "self.parse(l): {}".format(self.parse(l))
+        # print "self: {}".format(self)
+        # print "self.getSize(): {}".format(self.getSize())
+        # print "self.get(0): {}".format(self.get(0))
+        # print "self.getHasNominalAttributes(): {}".format(self.getHasNominalAttributes())
+        # print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
+        # print "self.getIndex(\"hey\"): {}".format(self.getIndex("hey"))
+        # print "self.getClassIndex(): {}".format(self.getClassIndex())
+        # print "self.get(getClassIndex()): {}".format(self.get(self.getClassIndex()))
+        # print "self.getClassAttribute(): {}".format(self.getClassAttribute())
+        # print "self.setClassIndex(0): {}".format(self.setClassIndex(0))
+        # print "self.add(NumericAttribute(\"num\")): {}".format(self.add(NumericAttribute("num")))
+        # print "self: {}".format(self)
+        # print "self.getIndex(\"num\")): {}".format(self.getIndex("num"))
+        # print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
 
 
 class AttributeFactory(object):
@@ -216,7 +213,50 @@ class Example(list):
             print e.args[0]
         print "self.add(3.3):".format(self.add(3.3))
         print "self.add(5.0):".format(self.add(5.0))
-        print self
+        print "self: {}".format(self)
+
+
+class Examples(list):
+    def __init__(self, attributes):
+        self.attributes = attributes.attributes
+
+    def __str__(self):
+        attr = []
+        for a in self.attributes:
+            attr.append(str(a))
+        ex = []
+        for e in self:
+            ex.append(str(e))
+        return "Attributes: ['{}']\nExamples: ['{}']".format("', '".join(attr), "', '".join(ex))
+
+    def __repr__(self):
+        return self.__str__()
+
+    def add(self, val):
+        if not isinstance(val, Example):
+            raise TypeError("Val must be an Example. Got {}".format(type(val)))
+        self.append(val)
+
+    def parse(self, scanner):
+        lines = scanner.split("\n")
+        for line in lines:
+            attr = line.split(" ")
+            ex = Example(len(line))
+            for i, a in enumerate(attr):
+                curAttr = self.attributes[i]
+                if isinstance(curAttr, NominalAttribute):
+                    ex.add(float(curAttr.getIndex(a)))
+                elif isinstance(curAttr, NumericAttribute):
+                    ex.add(float(a))
+            self.add(ex)
+
+    def main(self):
+        print
+        print "Examples::main"
+        ex = "trek knobby straight y 250.3 mountain\nbridgestone treads straight y 200 hybrid\ncannondale knobby curved n 222.9 mountain\nnishiki treads curved y 190.3 hybrid\ntrek treads straight y 196.8 hybrid"
+        # print ex
+        self.parse(ex)
+        print "self: {}".format(self)
 
 
 def main():
@@ -230,6 +270,8 @@ def main():
     d.main()
     e = Example(5)
     e.main()
+    f = Examples(c)
+    f.main()
 
 if __name__ == "__main__":
     main()
