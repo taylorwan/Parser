@@ -27,7 +27,7 @@ class NominalAttribute(Attribute):
         self.domain = []
 
     def __str__(self):
-        return "{} [{}]".format(self.name, ", ".join(self.domain))
+        return "{} ['{}']".format(self.name, "', '".join(self.domain))
 
     def __repr__(self):
         return self.__str__()
@@ -77,13 +77,15 @@ class Attributes(object):
         self.classIndex = 0
         self.hasNominalAttributes = False
         self.hasNumericAttributes = False
+        if __name__ == "__main__":
+            self.main()
 
     def __str__(self):
         # return "{}".format(", ".join(self.attributes))
         l = []
         for a in self.attributes:
             l.append(str(a))
-        return "[{}]".format(", ".join(l))
+        return "['{}']".format("', '".join(l))
 
     def __repr__(self):
         return self.__str__()
@@ -132,6 +134,7 @@ class Attributes(object):
         # while scanner:
         #     self.add(scanner.read())
         for s in scanner:
+            print s
             self.add(s)
         self.setClassIndex(self.getSize()-1)
         # self.attributes = scanner.split(" ")  # some random delimiter
@@ -139,7 +142,12 @@ class Attributes(object):
     def main(self):
         print
         print "Attributes::main"
-        l = [NominalAttribute("hey"), NominalAttribute("hello")]
+        a = NominalAttribute("hey")
+        # a.addValue("greeting")
+        a.addValue("informal")
+        b = NominalAttribute("hello")
+        b.addValue("greeting")
+        l = [a, b]
         print "l: {}".format(l)
         print "self.parse(l): {}".format(self.parse(l))
         print "self: {}".format(self)
@@ -190,6 +198,27 @@ class AttributeFactory(object):
         print "self.make(data): {}".format(self.make(data))
 
 
+class Example(list):
+    def __init__(self, n):
+        self.n = n
+
+    def add(self, val):
+        if not isinstance(val, float):
+            raise TypeError("Val must be a float. Got {}".format(type(val)))
+        self.append(val)
+
+    def main(self):
+        print
+        print "Example::main"
+        try:
+            print "self.add('chars'):".format(self.add('chars'))
+        except Exception as e:
+            print e.args[0]
+        print "self.add(3.3):".format(self.add(3.3))
+        print "self.add(5.0):".format(self.add(5.0))
+        print self
+
+
 def main():
     a = NominalAttribute("hello")
     a.main()
@@ -199,6 +228,8 @@ def main():
     c.main()
     d = AttributeFactory()
     d.main()
+    e = Example(5)
+    e.main()
 
 if __name__ == "__main__":
     main()
