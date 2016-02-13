@@ -25,22 +25,21 @@ class NominalAttribute(Attribute):
     def __init__(self, name=None):
         super(NominalAttribute, self).__init__(name)
         self.domain = []
-        self.values = []
 
     def __str__(self):
-        return "{} [{}]".format(self.name, ", ".join(self.values))
+        return "{} [{}]".format(self.name, ", ".join(self.domain))
 
     def __repr__(self):
         return self.__str__()
 
     def getIndex(self, value):  # error if the value is illegal
-        return self.values.index(value)
+        return self.domain.index(value)
 
     def getValue(self, index):  # error if the index is out of bounds
-        return self.values[index]
+        return self.domain[index]
 
     def addValue(self, value):  # error if the value can not be added
-        self.values.append(value)
+        self.domain.append(value)
         self.size += 1
 
     def main(self):
@@ -109,7 +108,7 @@ class Attributes(object):
         try:
             # return self.attributes.index(name)
             for i, a in enumerate(self.attributes):
-                if a.name is name:
+                if a.name == name:
                     return i
         except:
             print "value not in list"
@@ -159,6 +158,38 @@ class Attributes(object):
         print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
 
 
+class AttributeFactory(object):
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def make(self, scanner):
+        l = scanner.split(" ")
+        # l[0] is the attribute tag, so we don't need it
+        name = l[1]
+        if l[2] == 'numeric':
+            return NumericAttribute(name)
+        a = NominalAttribute(name)
+        for i in range(2, len(l)):
+            a.addValue(l[i])
+        return a
+
+    def main(self):
+        print
+        print "AttributeFactory::main"
+        data = "@attribute weight numeric"
+        print "data: {}".format(data)
+        print "self.make(data): {}".format(self.make(data))
+        data = "@attribute type mountain hybrid"
+        print "data: {}".format(data)
+        print "self.make(data): {}".format(self.make(data))
+
+
 def main():
     a = NominalAttribute("hello")
     a.main()
@@ -166,6 +197,8 @@ def main():
     b.main()
     c = Attributes()
     c.main()
+    d = AttributeFactory()
+    d.main()
 
 if __name__ == "__main__":
     main()
