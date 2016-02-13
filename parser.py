@@ -1,3 +1,6 @@
+import random
+
+
 class Attribute(object):
 
     def __init__(self, name=None):
@@ -125,42 +128,35 @@ class Attributes(object):
         return attribute
 
     def parse(self, scanner):  # error if a parse error occurs
-        # for s in scanner:
-        #     print s
-        #     self.add(s)
-        # self.setClassIndex(self.getSize()-1)
         m = AttributeFactory()
         s = m.make(scanner)
-        print s
         self.attributes.append(s)
         self.setClassIndex(self.getSize()-1)
+        return s
 
     def main(self):
         print
         print "Attributes::main"
+        print "self: {}".format(self)
+
         lines = "@attribute make trek bridgestone cannondale nishiki garyfisher\n@attribute tires knobby treads\n@attribute bars straight curved\n@attribute bottles y n\n@attribute weight numeric\n@attribute type mountain hybrid"
         for line in lines.split("\n"):
-            self.parse(line)
+            print "self.parse(line): {}".format(self.parse(line))
+
         print "self: {}".format(self)
-        # b = NominalAttribute("hello")
-        # b.addValue("greeting")
-        # l = [b]
-        # print "l: {}".format(l)
-        # print "self.parse(l): {}".format(self.parse(l))
-        # print "self: {}".format(self)
-        # print "self.getSize(): {}".format(self.getSize())
-        # print "self.get(0): {}".format(self.get(0))
-        # print "self.getHasNominalAttributes(): {}".format(self.getHasNominalAttributes())
-        # print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
-        # print "self.getIndex(\"hey\"): {}".format(self.getIndex("hey"))
-        # print "self.getClassIndex(): {}".format(self.getClassIndex())
-        # print "self.get(getClassIndex()): {}".format(self.get(self.getClassIndex()))
-        # print "self.getClassAttribute(): {}".format(self.getClassAttribute())
-        # print "self.setClassIndex(0): {}".format(self.setClassIndex(0))
-        # print "self.add(NumericAttribute(\"num\")): {}".format(self.add(NumericAttribute("num")))
-        # print "self: {}".format(self)
-        # print "self.getIndex(\"num\")): {}".format(self.getIndex("num"))
-        # print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
+        print "self.getSize(): {}".format(self.getSize())
+        print "self.get(0): {}".format(self.get(0))
+        print "self.getHasNominalAttributes(): {}".format(self.getHasNominalAttributes())
+        print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
+        print "self.getIndex(\"hey\"): {}".format(self.getIndex("hey"))
+        print "self.getClassIndex(): {}".format(self.getClassIndex())
+        print "self.get(getClassIndex()): {}".format(self.get(self.getClassIndex()))
+        print "self.getClassAttribute(): {}".format(self.getClassAttribute())
+        print "self.setClassIndex(0): {}".format(self.setClassIndex(0))
+        print "self.add(NumericAttribute(\"num\")): {}".format(self.add(NumericAttribute("num")))
+        print "self: {}".format(self)
+        print "self.getIndex(\"num\")): {}".format(self.getIndex("num"))
+        print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
 
 
 class AttributeFactory(object):
@@ -238,25 +234,98 @@ class Examples(list):
         self.append(val)
 
     def parse(self, scanner):
-        lines = scanner.split("\n")
-        for line in lines:
-            attr = line.split(" ")
-            ex = Example(len(line))
-            for i, a in enumerate(attr):
-                curAttr = self.attributes[i]
-                if isinstance(curAttr, NominalAttribute):
-                    ex.add(float(curAttr.getIndex(a)))
-                elif isinstance(curAttr, NumericAttribute):
-                    ex.add(float(a))
-            self.add(ex)
+        attr = scanner.split(" ")
+        ex = Example(len(attr))
+        for i, a in enumerate(attr):
+            curAttr = self.attributes[i]
+            if isinstance(curAttr, NominalAttribute):
+                ex.add(float(curAttr.getIndex(a)))
+            elif isinstance(curAttr, NumericAttribute):
+                ex.add(float(a))
+        self.add(ex)
 
     def main(self):
         print
         print "Examples::main"
         ex = "trek knobby straight y 250.3 mountain\nbridgestone treads straight y 200 hybrid\ncannondale knobby curved n 222.9 mountain\nnishiki treads curved y 190.3 hybrid\ntrek treads straight y 196.8 hybrid"
-        # print ex
-        self.parse(ex)
+        for line in ex.split("\n"):
+            self.parse(line)
         print "self: {}".format(self)
+
+
+class DataSet(object):
+    def __init__(self, attributes=Attributes()):  # error if the examples can not be added because of type or memory problems
+        self.name = None
+        self.attributes = attributes
+        self.examples = Examples(attributes)
+        self.seed = -1
+        self.random = random.random()
+        self.options = None
+        pass
+
+    def __str__(self):
+        return "{}".format(self.name)
+
+    def __repr__(self):
+        return self.__str__()
+
+    def addDataset(self, dataset):  # error if the examples can not be added because of type or memory problems
+        for example in dataset.getExamples():
+            self.add(example)
+
+    def addExample(self, example):  # error if the example can not be added because of type or memory problems
+        self.examples.add(example)
+
+    def getAttributes(self):
+        return self.attributes
+
+    def getExamples(self):
+        return self.examples
+
+    def getHasNominalAttributes(self):
+        return self.attributes.getHasNominalAttributes()
+
+    def getHasNumericAttributes(self):
+        return self.attributes.getHasNumericAttributes()
+
+    def getSeed(self):
+        return self.seed
+
+    def load(self, filename):  # error if the file is not found or if a parse error occurs
+        with open(filename) as f:
+            self.parse(f.read())
+
+    def parse(self, scanner):  # error if a parse error occurs
+        exampleSec = False
+        for line in scanner.split("\n"):
+            if line == '':
+                continue
+
+            words = line.split(" ")
+            if exampleSec:
+                self.examples.parse(line)
+            elif words[0] == '@dataset':
+                self.name = words[1]
+            elif words[0] == '@attribute':
+                self.attributes.parse(line)
+            elif words[0] == '@examples':
+                exampleSec = True
+
+    def setOptions(self, options):  # error if an option is illegal
+        pass
+
+    def setSeed(self, seed):
+        self.seed = seed
+
+    def main(self):
+        print
+        print "DataSet::main"
+        print self.getAttributes()
+        print self.getExamples()
+        print "self.load(bikes.mff): {}".format(self.load("bikes.mff"))
+        print self
+        print self.getAttributes()
+        print self.getExamples()
 
 
 def main():
@@ -272,6 +341,8 @@ def main():
     e.main()
     f = Examples(c)
     f.main()
+    g = DataSet(Attributes())
+    g.main()
 
 if __name__ == "__main__":
     main()
