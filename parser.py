@@ -1,3 +1,15 @@
+#
+# Taylor Wan
+# tw476@georgetown.edu
+# Platform: OS X
+# Language/Environment: python
+#
+# In accordance with the class policies and Georgetown's Honor Code,
+# I certify that, with the exceptions of the class resources and those
+# items noted below, I have neither given nor received any assistance
+# on this project.
+#
+
 import random
 import sys
 
@@ -282,7 +294,7 @@ class DataSet(object):
 
     def addDataset(self, dataset):  # error if the examples can not be added because of type or memory problems
         for example in dataset.getExamples():
-            self.add(example)
+            self.addExample(example)
 
     def addExample(self, example):  # error if the example can not be added because of type or memory problems
         self.examples.add(example)
@@ -378,36 +390,38 @@ class TrainTestSets(object):
 
     def setTestingSet(self, test):
         self.test.addDataset(test)
+        return "Success"
 
     def setTrainingSet(self, train):  # error java.lang.Exception
         self.train.addDataset(train)
+        return "Success"
 
     def main(self):  # error if the examples can not be added because of type or memory problems
         print
         print "TrainTestSets::main"
-        print self
-        print self.mode
+        print "self: {}".format(self)
+        print "self.mode: {}".format(self.mode)
         g = DataSet(Attributes())
         g.main()
-        print "ALSKDJFALKSDJFL;ASKDJFLKSJDF HERE::main"
-        self.setTestingSet(g)
+        print "self.setTrainingSet(g): {}".format(self.setTrainingSet(g))
+        print "self.setTestingSet(DataSet(Attributes())): {}".format(self.setTestingSet(DataSet(Attributes())))
 
 
 def test():
-    # a = NominalAttribute("hello")
-    # a.main()
-    # b = NumericAttribute("num")
-    # b.main()
-    # c = Attributes()
-    # c.main()
-    # d = AttributeFactory()
-    # d.main()
-    # e = Example(5)
-    # e.main()
-    # f = Examples(c)
-    # f.main()
-    # g = DataSet(Attributes())
-    # g.main()
+    a = NominalAttribute("hello")
+    a.main()
+    b = NumericAttribute("num")
+    b.main()
+    c = Attributes()
+    c.main()
+    d = AttributeFactory()
+    d.main()
+    e = Example(5)
+    e.main()
+    f = Examples(c)
+    f.main()
+    g = DataSet(Attributes())
+    g.main()
     h = TrainTestSets(sys.argv)
     h.main()
 
