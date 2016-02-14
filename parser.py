@@ -269,7 +269,7 @@ class DataSet(object):
         self.examples = Examples(attributes)
         self.seed = -1
         self.random = random.random()
-        self.options = None
+        self.mode = 0
 
     def __str__(self):
         chart = "@dataset {}\n\n".format(self.name)
@@ -324,7 +324,14 @@ class DataSet(object):
         return "Success"
 
     def setOptions(self, options):  # error if an option is illegal
-        self.options = options
+        if len(options) == 1:
+            pass
+        elif options[1] == '-t':
+            self.mode = 1
+        elif options[1] == '-T':
+            self.mode = 2
+        else:
+            raise ValueError("Illegal option: " + " ".join(options[1:]))
 
     def setSeed(self, seed):
         self.seed = seed
@@ -342,8 +349,8 @@ class DataSet(object):
 
 class TrainTestSets(object):
     def __init__(self, options=[]):  # error if the examples can not be added because of type or memory problems
-        self.test = None
-        self.train = None
+        self.test = DataSet(Attributes())
+        self.train = DataSet(Attributes())
         self.mode = 0  # 1 if testing, 2 if training
         self.setOptions(options)
 
@@ -367,7 +374,7 @@ class TrainTestSets(object):
         elif options[1] == '-T':
             self.mode = 2
         else:
-            raise ValueError("illegal option")
+            raise ValueError("Illegal option: " + " ".join(options[1:]))
 
     def setTestingSet(self, test):
         self.test.addDataset(test)
@@ -380,27 +387,35 @@ class TrainTestSets(object):
         print "TrainTestSets::main"
         print self
         print self.mode
+        g = DataSet(Attributes())
+        g.main()
+        print "ALSKDJFALKSDJFL;ASKDJFLKSJDF HERE::main"
+        self.setTestingSet(g)
+
+
+def test():
+    # a = NominalAttribute("hello")
+    # a.main()
+    # b = NumericAttribute("num")
+    # b.main()
+    # c = Attributes()
+    # c.main()
+    # d = AttributeFactory()
+    # d.main()
+    # e = Example(5)
+    # e.main()
+    # f = Examples(c)
+    # f.main()
+    # g = DataSet(Attributes())
+    # g.main()
+    h = TrainTestSets(sys.argv)
+    h.main()
 
 
 def main():
     try:
         print "main: testing"
-        a = NominalAttribute("hello")
-        a.main()
-        b = NumericAttribute("num")
-        b.main()
-        c = Attributes()
-        c.main()
-        d = AttributeFactory()
-        d.main()
-        e = Example(5)
-        e.main()
-        f = Examples(c)
-        f.main()
-        g = DataSet(Attributes())
-        g.main()
-        h = TrainTestSets(sys.argv)
-        h.main()
+        test()
     except Exception as e:
         print e.args[0]
 
