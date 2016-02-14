@@ -1,4 +1,5 @@
 import random
+import sys
 
 
 class Attribute(object):
@@ -62,7 +63,7 @@ class NumericAttribute(Attribute):
         super(NumericAttribute, self).__init__(name)
 
     def __str__(self):
-        return "{}".format(self.name)
+        return "{} (numeric)".format(self.name)
 
     def __repr__(self):
         return self.__str__()
@@ -82,10 +83,13 @@ class Attributes(object):
         self.hasNumericAttributes = False
 
     def __str__(self):
-        l = []
-        for a in self.attributes:
-            l.append(str(a))
-        return "['{}']".format("', '".join(l))
+        printout = "@attributes\n"
+        if self.attributes:
+            for a in self.attributes:
+                printout += str(a) + "\n"
+        else:
+            printout += "Empty"
+        return printout
 
     def __repr__(self):
         return self.__str__()
@@ -106,12 +110,9 @@ class Attributes(object):
         return self.attributes[self.classIndex]
 
     def getIndex(self, name):  # error if the name is illegal
-        try:
-            for i, a in enumerate(self.attributes):
-                if a.name == name:
-                    return i
-        except:
-            print "value not in list"
+        for i, a in enumerate(self.attributes):
+            if a.name == name:
+                return i
 
     def getClassIndex(self):  # error if the class index is out of range
         return self.classIndex
@@ -132,34 +133,31 @@ class Attributes(object):
         s = m.make(scanner)
         self.attributes.append(s)
         self.setClassIndex(self.getSize()-1)
-        return s
+        return "Success"
 
     def main(self):
-        try:
-            print
-            print "Attributes::main"
-            print "self: {}".format(self)
+        print
+        print "Attributes::main"
+        print "self: {}".format(self)
 
-            lines = "@attribute make trek bridgestone cannondale nishiki garyfisher\n@attribute tires knobby treads\n@attribute bars straight curved\n@attribute bottles y n\n@attribute weight numeric\n@attribute type mountain hybrid"
-            for line in lines.split("\n"):
-                print "self.parse(line): {}".format(self.parse(line))
+        lines = "@attribute make trek bridgestone cannondale nishiki garyfisher\n@attribute tires knobby treads\n@attribute bars straight curved\n@attribute bottles y n\n@attribute weight numeric\n@attribute type mountain hybrid"
+        for line in lines.split("\n"):
+            print "self.parse(line): {}".format(self.parse(line))
 
-            print "self: {}".format(self)
-            print "self.getSize(): {}".format(self.getSize())
-            print "self.get(0): {}".format(self.get(0))
-            print "self.getHasNominalAttributes(): {}".format(self.getHasNominalAttributes())
-            print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
-            print "self.getIndex(\"hey\"): {}".format(self.getIndex("hey"))
-            print "self.getClassIndex(): {}".format(self.getClassIndex())
-            print "self.get(getClassIndex()): {}".format(self.get(self.getClassIndex()))
-            print "self.getClassAttribute(): {}".format(self.getClassAttribute())
-            print "self.setClassIndex(0): {}".format(self.setClassIndex(0))
-            print "self.add(NumericAttribute(\"num\")): {}".format(self.add(NumericAttribute("num")))
-            print "self: {}".format(self)
-            print "self.getIndex(\"num\")): {}".format(self.getIndex("num"))
-            print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
-        except:
-            print "an error has occured"
+        print "self: {}".format(self)
+        print "self.getSize(): {}".format(self.getSize())
+        print "self.get(0): {}".format(self.get(0))
+        print "self.getHasNominalAttributes(): {}".format(self.getHasNominalAttributes())
+        print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
+        print "self.getIndex(\"hey\"): {}".format(self.getIndex("hey"))
+        print "self.getClassIndex(): {}".format(self.getClassIndex())
+        print "self.get(getClassIndex()): {}".format(self.get(self.getClassIndex()))
+        print "self.getClassAttribute(): {}".format(self.getClassAttribute())
+        print "self.setClassIndex(0): {}".format(self.setClassIndex(0))
+        print "self.add(NumericAttribute(\"num\")): {}".format(self.add(NumericAttribute("num")))
+        print "self: {}".format(self)
+        print "self.getIndex(\"num\")): {}".format(self.getIndex("num"))
+        print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
 
 
 class AttributeFactory(object):
@@ -184,17 +182,14 @@ class AttributeFactory(object):
         return a
 
     def main(self):
-        try:
-            print
-            print "AttributeFactory::main"
-            data = "@attribute weight numeric"
-            print "data: {}".format(data)
-            print "self.make(data): {}".format(self.make(data))
-            data = "@attribute type mountain hybrid"
-            print "data: {}".format(data)
-            print "self.make(data): {}".format(self.make(data))
-        except:
-            print "an error has occured"
+        print
+        print "AttributeFactory::main"
+        data = "@attribute weight numeric"
+        print "data: {}".format(data)
+        print "self.make(data): {}".format(self.make(data))
+        data = "@attribute type mountain hybrid"
+        print "data: {}".format(data)
+        print "self.make(data): {}".format(self.make(data))
 
 
 class Example(list):
@@ -213,12 +208,10 @@ class Example(list):
             print "self.add('chars'):".format(self.add('chars'))
         except Exception as e:
             print e.args[0]
-        try:
-            print "self.add(3.3):".format(self.add(3.3))
-            print "self.add(5.0):".format(self.add(5.0))
-            print "self: {}".format(self)
-        except:
-            print "an error has occured"
+
+        print "self.add(3.3):".format(self.add(3.3))
+        print "self.add(5.0):".format(self.add(5.0))
+        print "self: {}".format(self)
 
 
 class Examples(list):
@@ -226,13 +219,18 @@ class Examples(list):
         self.attributes = attributes.attributes
 
     def __str__(self):
-        attr = []
-        for a in self.attributes:
-            attr.append(str(a))
-        ex = []
-        for e in self:
-            ex.append(str(e))
-        return "Attributes: ['{}']\nExamples: ['{}']".format("', '".join(attr), "', '".join(ex))
+        chart = "@examples\n"
+        if self:
+            for a in self.attributes:
+                chart += a.name + "\t\t"
+            chart += "\n"
+            for e in self:
+                for val in e:
+                    chart += str(val) + "\t\t"
+                chart += "\n"
+        else:
+            chart += "Empty"
+        return chart
 
     def __repr__(self):
         return self.__str__()
@@ -241,6 +239,7 @@ class Examples(list):
         if not isinstance(val, Example):
             raise TypeError("Val must be an Example. Got {}".format(type(val)))
         self.append(val)
+        return val
 
     def parse(self, scanner):
         attr = scanner.split(" ")
@@ -252,17 +251,15 @@ class Examples(list):
             elif isinstance(curAttr, NumericAttribute):
                 ex.add(float(a))
         self.add(ex)
+        return "Success"
 
     def main(self):
-        try:
-            print
-            print "Examples::main"
-            ex = "trek knobby straight y 250.3 mountain\nbridgestone treads straight y 200 hybrid\ncannondale knobby curved n 222.9 mountain\nnishiki treads curved y 190.3 hybrid\ntrek treads straight y 196.8 hybrid"
-            for line in ex.split("\n"):
-                self.parse(line)
-            print "self: {}".format(self)
-        except:
-            print "an error has occured"
+        print
+        print "Examples::main"
+        ex = "trek knobby straight y 250.3 mountain\nbridgestone treads straight y 200 hybrid\ncannondale knobby curved n 222.9 mountain\nnishiki treads curved y 190.3 hybrid\ntrek treads straight y 196.8 hybrid"
+        for line in ex.split("\n"):
+            self.parse(line)
+        print "self: {}".format(self)
 
 
 class DataSet(object):
@@ -275,7 +272,10 @@ class DataSet(object):
         self.options = None
 
     def __str__(self):
-        return "{}".format(self.name)
+        chart = "@dataset {}\n\n".format(self.name)
+        chart += str(self.attributes) + "\n"
+        chart += str(self.examples)
+        return chart
 
     def __repr__(self):
         return self.__str__()
@@ -304,7 +304,7 @@ class DataSet(object):
 
     def load(self, filename):  # error if the file is not found or if a parse error occurs
         with open(filename) as f:
-            self.parse(f.read())
+            return self.parse(f.read())
 
     def parse(self, scanner):  # error if a parse error occurs
         exampleSec = False
@@ -321,6 +321,7 @@ class DataSet(object):
                 self.attributes.parse(line)
             elif words[0] == '@examples':
                 exampleSec = True
+        return "Success"
 
     def setOptions(self, options):  # error if an option is illegal
         self.options = options
@@ -329,27 +330,25 @@ class DataSet(object):
         self.seed = seed
 
     def main(self):
-        try:
-            print
-            print "DataSet::main"
-            print self.getAttributes()
-            print self.getExamples()
-            print "self.load(bikes.mff): {}".format(self.load("bikes.mff"))
-            print self
-            print self.getAttributes()
-            print self.getExamples()
-        except:
-            print "an error has occured"
+        print
+        print "DataSet::main"
+        print self.getAttributes()
+        print self.getExamples()
+        print "self.load(bikes.mff): {}".format(self.load("bikes.mff"))
+        print self
+        print self.getAttributes()
+        print self.getExamples()
 
 
 class TrainTestSets(object):
     def __init__(self, options=[]):  # error if the examples can not be added because of type or memory problems
         self.test = None
         self.train = None
-        self.options = options
+        self.mode = 0  # 1 if testing, 2 if training
+        self.setOptions(options)
 
     def __str__(self):
-        return "Training Set: {}\n Test Set: {}".format(self.train, self.test)
+        return "Training Set:\n{}\n\nTest Set:\n{}".format(self.train, self.test)
 
     def __repr__(self):
         return self.__str__()
@@ -361,7 +360,14 @@ class TrainTestSets(object):
         return self.train
 
     def setOptions(self, options):  # error if an option is illegal
-        self.options = options
+        if len(options) == 1:
+            pass
+        elif options[1] == '-t':
+            self.mode = 1
+        elif options[1] == '-T':
+            self.mode = 2
+        else:
+            raise ValueError("illegal option")
 
     def setTestingSet(self, test):
         self.test.addDataset(test)
@@ -372,26 +378,31 @@ class TrainTestSets(object):
     def main(self):  # error if the examples can not be added because of type or memory problems
         print
         print "TrainTestSets::main"
+        print self
+        print self.mode
 
 
 def main():
-    print "main: testing"
-    a = NominalAttribute("hello")
-    a.main()
-    b = NumericAttribute("num")
-    b.main()
-    c = Attributes()
-    c.main()
-    d = AttributeFactory()
-    d.main()
-    e = Example(5)
-    e.main()
-    f = Examples(c)
-    f.main()
-    g = DataSet(Attributes())
-    g.main()
-    # h = TrainTestSets()
-    # h.main()
+    try:
+        print "main: testing"
+        a = NominalAttribute("hello")
+        a.main()
+        b = NumericAttribute("num")
+        b.main()
+        c = Attributes()
+        c.main()
+        d = AttributeFactory()
+        d.main()
+        e = Example(5)
+        e.main()
+        f = Examples(c)
+        f.main()
+        g = DataSet(Attributes())
+        g.main()
+        h = TrainTestSets(sys.argv)
+        h.main()
+    except Exception as e:
+        print e.args[0]
 
 if __name__ == "__main__":
     main()
