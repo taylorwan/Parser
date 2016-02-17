@@ -209,8 +209,8 @@ class Example(list):
         self.n = n
 
     def add(self, val):
-        if not isinstance(val, float):
-            raise TypeError("Val must be a float. Got {}".format(type(val)))
+        if not isinstance(val, float) and not isinstance(val, int):
+            raise TypeError("Val must be an int or float. Got {}".format(type(val)))
         self.append(val)
 
     def main(self):
@@ -259,7 +259,7 @@ class Examples(list):
         for i, a in enumerate(attr):
             curAttr = self.attributes[i]
             if isinstance(curAttr, NominalAttribute):
-                ex.add(float(curAttr.getIndex(a)))
+                ex.add(curAttr.getIndex(a))
             elif isinstance(curAttr, NumericAttribute):
                 ex.add(float(a))
         self.add(ex)
