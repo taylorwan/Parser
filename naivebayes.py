@@ -1,4 +1,5 @@
 from classifier import *
+from traintestsets import *
 
 
 class NaiveBayes(Classifier):
@@ -66,3 +67,15 @@ class NaiveBayes(Classifier):
         for ex in self.examples.getExamples():
             vals[ex[-1]] += 1
         return vals
+
+
+def main():
+    try:
+        ds = TrainTestSets(sys.argv)
+        Evaluator(NaiveBayes()).evaluate(ds.getTrainingSet())
+    except Exception as e:
+        print e.args[0]
+
+
+if __name__ == "__main__":
+    main()

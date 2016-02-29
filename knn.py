@@ -1,5 +1,18 @@
+#
+# Taylor Wan
+# tw476@georgetown.edu
+# Platform: OS X
+# Language/Environment: python
+#
+# In accordance with the class policies and Georgetown's Honor Code,
+# I certify that, with the exceptions of the class resources and those
+# items noted below, I have neither given nor received any assistance
+# on this project.
+#
+
 import operator
 from classifier import *
+from traintestsets import *
 
 
 class KNN(Classifier):
@@ -54,3 +67,15 @@ class KNN(Classifier):
             results.append([self.calcDist(inst, ex), ex[-1]])
         neighbors = self.closestK(results)
         return self.calcVote(neighbors)
+
+
+def main():
+    try:
+        ds = TrainTestSets(sys.argv)
+        Evaluator(KNN()).evaluate(ds.getTrainingSet())
+    except Exception as e:
+        print e.args[0]
+
+
+if __name__ == "__main__":
+    main()

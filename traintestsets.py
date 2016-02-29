@@ -38,13 +38,13 @@ class TrainTestSets(object):
             next = opts.index(testTag) + 1
             self.test.load(opts[next])
 
-        if 'knn' in opts:
-            c = KNN()
-            Evaluator(c).evaluate(self.train)
+        # if 'knn' in opts:
+        #     c = KNN()
+        #     Evaluator(c).evaluate(self.train)
 
-        elif 'nb' in opts or 'naivebayes' in opts:
-            c = NaiveBayes()
-            Evaluator(c).evaluate(self.train)
+        # elif 'nb' in opts or 'naivebayes' in opts:
+        #     c = NaiveBayes()
+        #     Evaluator(c).evaluate(self.train)
 
     def setTestingSet(self, test):
         self.test.addDataset(test)
