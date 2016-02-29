@@ -71,18 +71,19 @@ class kNN(Classifier):
 
 ## initialize and evaluate
 def main():
-    # try:
+    try:
         ds = TrainTestSets(sys.argv)
         if len(ds.getTrainingSet().getExamples()) > 0:
             if len(ds.getTestingSet().getExamples()) > 0:
                 Evaluator(kNN()).evaluate(ds.getTrainingSet(), ds.getTestingSet())
             else:
+                print "here"
                 Evaluator(kNN()).evaluate(ds.getTrainingSet())
-    # except Exception as e:
-    #     if len(e.args) == 1:
-    #         print e.args[0]
-    #     else:
-    #         print e.args[1]
+    except Exception as e:
+        if len(e.args) == 1:
+            print e.args[0]
+        else:
+            print e.args[1]
 
 
 if __name__ == "__main__":

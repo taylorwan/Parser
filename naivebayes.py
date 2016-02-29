@@ -50,6 +50,7 @@ class NaiveBayes(Classifier):
         for i, c in enumerate(counts):
             s = sum(c.values())
             for k in c:
+                # print "{}:".format(k), i, c, c[k], "/", float(s)
                 p[k] *= c[k]/float(s)
 
         # return normalized values
