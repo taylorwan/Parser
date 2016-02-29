@@ -1,2 +1,6 @@
 grammar.pdf
 *.pyc
+*.ico
+build
+dist
+*.spec

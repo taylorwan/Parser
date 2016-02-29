@@ -28,12 +28,14 @@ class Examples(list):
     def getAttributes(self):
         return self.attributes
 
+    ## add a single example to our list
     def add(self, val):
         if not isinstance(val, Example):
             raise TypeError("Val must be an Example. Got {}".format(type(val)))
         self.append(val)
         return val
 
+    ## parse through examples and add them to our list
     def parse(self, scanner):
         attr = scanner.split(" ")
         ex = Example(len(attr))
@@ -44,7 +46,6 @@ class Examples(list):
             elif isinstance(curAttr, NumericAttribute):
                 ex.add(float(a))
         self.add(ex)
-        return "Success"
 
     def main(self):
         print

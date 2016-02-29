@@ -15,17 +15,15 @@ from classifier import *
 from traintestsets import *
 
 
-class KNN(Classifier):
+class kNN(Classifier):
     def __init__(self, e=DataSet(), i=DataSet(), k=3):
-        super(KNN, self).__init__(e, i)
+        super(kNN, self).__init__(e, i)
         self.k = k
         self.setOptions(sys.argv[1:])
-        self.name = 'KNN'
+        self.type = 'k-NN'
 
     def __str__(self):
-        output = super(KNN, self).__str__()
-        output += "------K-----\n{} nearest neighbors\n".format(self.k)
-        return output
+        return super(kNN, self).__str__() + " (k={})".format(self.k)
 
     def __repr__(self):
         return self.__str__()
@@ -34,6 +32,8 @@ class KNN(Classifier):
         k = '-k'
         if k in opts:
             next = opts.index(k) + 1
+            if next >= len(opts):
+                raise SyntaxError("Missing argument")
             self.k = int(opts[next])
 
     def calcDist(self, inst, ex):
@@ -69,12 +69,20 @@ class KNN(Classifier):
         return self.calcVote(neighbors)
 
 
+## initialize and evaluate
 def main():
-    try:
+    # try:
         ds = TrainTestSets(sys.argv)
-        Evaluator(KNN()).evaluate(ds.getTrainingSet())
-    except Exception as e:
-        print e.args[0]
+        if len(ds.getTrainingSet().getExamples()) > 0:
+            if len(ds.getTestingSet().getExamples()) > 0:
+                Evaluator(kNN()).evaluate(ds.getTrainingSet(), ds.getTestingSet())
+            else:
+                Evaluator(kNN()).evaluate(ds.getTrainingSet())
+    # except Exception as e:
+    #     if len(e.args) == 1:
+    #         print e.args[0]
+    #     else:
+    #         print e.args[1]
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ class DataSet(object):
         self.attributes = attributes
         self.examples = Examples(attributes)
         self.seed = -1
-        self.random = random.random()
+        self.setSeed()
 
     def __str__(self):
         chart = "@dataset {}\n\n".format(self.name)
@@ -46,6 +46,11 @@ class DataSet(object):
         with open(filename) as f:
             return self.parse(f.read())
 
+    ## determine whether type a line in a dataset file is a:
+    ## - dataset header
+    ## - attribute declaration
+    ## - example
+    ## and parse accordingly
     def parse(self, scanner):  # error if a parse error occurs
         exampleSec = False
         for line in scanner.split("\n"):
@@ -61,18 +66,14 @@ class DataSet(object):
                 self.attributes.parse(line)
             elif words[0] == '@examples':
                 exampleSec = True
-        return "Success"
 
-    def setOptions(self, options):  # error if an option is illegal
-        if len(options) == 1:
-            pass
-        elif options[1] == '-s':
+    ## parse through command line options
+    def setOptions(self, opts):  # error if an option is illegal
+        if '-s' in opts:
             setSeed(random.random())
-        else:
-            raise ValueError("Illegal option: " + " ".join(options[1:]))
 
-    def setSeed(self, seed):
-        self.seed = seed
+    def setSeed(self):
+        self.seed = random.random()
 
     def main(self):
         print

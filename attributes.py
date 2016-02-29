@@ -64,7 +64,6 @@ class Attributes(object):
         s = m.make(scanner)
         self.attributes.append(s)
         self.setClassIndex(self.getSize()-1)
-        return "Success"
 
     def main(self):
         print
