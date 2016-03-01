@@ -26,13 +26,3 @@ class NominalAttribute(Attribute):
     def addValue(self, value):  # error if the value can not be added
         self.domain.append(value)
         self.size += 1
-
-    def main(self):
-        print
-        print "NominalAttribute::main"
-        self.addValue("hey")
-        self.addValue("hello")
-        print "self: {}".format(self)
-        print "self.getSize(): {}".format(self.getSize())
-        print "self.getValue(1): {}".format(self.getValue(1))
-        print "self.getIndex(self.getValue(1)): {}".format(self.getIndex(self.getValue(1)))

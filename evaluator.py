@@ -29,7 +29,7 @@ class Evaluator(object):
         if x in opts:
             next = opts.index(x) + 1
             if next >= len(opts):
-                raise SyntaxError("Missing argument")
+                raise SyntaxError("Missing argument for -x")
             self.folds = int(opts[next])
 
     ## calculate the average for a list of values

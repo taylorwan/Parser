@@ -4,3 +4,4 @@ grammar.pdf
 build
 dist
 *.spec
+.txt

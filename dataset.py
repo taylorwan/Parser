@@ -85,13 +85,3 @@ class DataSet(object):
     ## generate a random number for our seed
     def setSeed(self):
         self.seed = random.random()
-
-    def main(self):
-        print
-        print "DataSet::main"
-        print self.getAttributes()
-        print self.getExamples()
-        print "self.load(bikes.mff): {}".format(self.load("bikes.mff"))
-        print self
-        print self.getAttributes()
-        print self.getExamples()

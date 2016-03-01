@@ -24,13 +24,3 @@ class AttributeFactory(object):
         for i in range(2, len(l)):
             a.addValue(l[i])
         return a
-
-    def main(self):
-        print
-        print "AttributeFactory::main"
-        data = "@attribute weight numeric"
-        print "data: {}".format(data)
-        print "self.make(data): {}".format(self.make(data))
-        data = "@attribute type mountain hybrid"
-        print "data: {}".format(data)
-        print "self.make(data): {}".format(self.make(data))

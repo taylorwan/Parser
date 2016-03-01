@@ -77,21 +77,11 @@ class TrainTestSets(object):
     ## throw an error message with the correct syntax for options
     def loadOptionsError(self, opts, msg="Invalid Syntax"):
         base = " [-t <path> [-T <path>]] [-x folds]"
-        knnSyntax = "./knn" + base + " [-k neighbors]"
-        nbSyntax = "./nb" + base
-        if 'knn.py' in opts:
+        knnSyntax = "./kNN" + base + " [-k neighbors]"
+        nbSyntax = "./NaiveBayes" + base
+        if './kNN' in opts:
             raise SyntaxError(msg + "\n" + knnSyntax)
-        elif 'nb.py' in opts:
+        elif './NaiveBayes' in opts:
             raise SyntaxError(msg + "\n" + nbSyntax)
         else:
             raise SyntaxError(msg + "\n" + knnSyntax + "\n" + nbSyntax)
-
-    def main(self):  # error if the examples can not be added because of type or memory problems
-        print
-        print "TrainTestSets::main"
-        print "self: {}".format(self)
-        print "self.mode: {}".format(self.mode)
-        g = DataSet(Attributes())
-        g.main()
-        print "self.setTrainingSet(g): {}".format(self.setTrainingSet(g))
-        print "self.setTestingSet(DataSet(Attributes())): {}".format(self.setTestingSet(DataSet(Attributes())))

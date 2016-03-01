@@ -1,0 +1,139 @@
+./NaiveBayes -t mushroom.mff > results.txt
+10-fold cross validation with Naive Bayes
+Test Set 1: 100.00%
+Test Set 2: 88.89%
+Test Set 3: 100.00%
+Test Set 4: 80.00%
+Test Set 5: 100.00%
+Test Set 6: 84.62%
+Test Set 7: 83.33%
+Test Set 8: 77.78%
+Test Set 9: 92.31%
+Test Set 10: 85.71%
+Accuracy: 89.26 +- 8.45
+
+./kNN -t mushroom.mff -k 1 >> results.txt
+10-fold cross validation with k-NN (k=1)
+Test Set 1: 100.00%
+Test Set 2: 100.00%
+Test Set 3: 100.00%
+Test Set 4: 100.00%
+Test Set 5: 100.00%
+Test Set 6: 100.00%
+Test Set 7: 100.00%
+Test Set 8: 100.00%
+Test Set 9: 100.00%
+Test Set 10: 100.00%
+Accuracy: 100.00 +- 0.00
+
+./kNN -t mushroom.mff -k 3 >> results.txt
+10-fold cross validation with k-NN (k=3)
+Test Set 1: 100.00%
+Test Set 2: 100.00%
+Test Set 3: 100.00%
+Test Set 4: 100.00%
+Test Set 5: 100.00%
+Test Set 6: 100.00%
+Test Set 7: 100.00%
+Test Set 8: 100.00%
+Test Set 9: 100.00%
+Test Set 10: 100.00%
+Accuracy: 100.00 +- 0.00
+
+./kNN -t mushroom.mff -k 5 >> results.txt
+10-fold cross validation with k-NN (k=5)
+Test Set 1: 100.00%
+Test Set 2: 100.00%
+Test Set 3: 100.00%
+Test Set 4: 100.00%
+Test Set 5: 100.00%
+Test Set 6: 100.00%
+Test Set 7: 100.00%
+Test Set 8: 100.00%
+Test Set 9: 100.00%
+Test Set 10: 100.00%
+Accuracy: 100.00 +- 0.00
+
+./kNN -t mushroom.mff -k 7 >> results.txt
+10-fold cross validation with k-NN (k=7)
+Test Set 1: 100.00%
+Test Set 2: 100.00%
+Test Set 3: 100.00%
+Test Set 4: 100.00%
+Test Set 5: 100.00%
+Test Set 6: 100.00%
+Test Set 7: 100.00%
+Test Set 8: 100.00%
+Test Set 9: 100.00%
+Test Set 10: 100.00%
+Accuracy: 100.00 +- 0.00
+
+./NaiveBayes -t votes.mff > results.txt
+10-fold cross validation with Naive Bayes
+Test Set 1: 91.11%
+Test Set 2: 92.31%
+Test Set 3: 90.48%
+Test Set 4: 85.71%
+Test Set 5: 82.35%
+Test Set 6: 94.00%
+Test Set 7: 86.67%
+Test Set 8: 98.00%
+Test Set 9: 91.11%
+Test Set 10: 95.92%
+Accuracy: 90.77 +- 4.77
+
+./kNN -t votes.mff -k 1 >> results.txt
+10-fold cross validation with k-NN (k=1)
+Test Set 1: 97.44%
+Test Set 2: 88.64%
+Test Set 3: 90.70%
+Test Set 4: 88.10%
+Test Set 5: 97.56%
+Test Set 6: 94.00%
+Test Set 7: 91.84%
+Test Set 8: 94.12%
+Test Set 9: 88.37%
+Test Set 10: 93.33%
+Accuracy: 92.41 +- 3.50
+
+./kNN -t votes.mff -k 3 >> results.txt
+10-fold cross validation with k-NN (k=3)
+Test Set 1: 89.47%
+Test Set 2: 96.23%
+Test Set 3: 95.24%
+Test Set 4: 91.43%
+Test Set 5: 97.50%
+Test Set 6: 91.84%
+Test Set 7: 89.13%
+Test Set 8: 97.83%
+Test Set 9: 96.43%
+Test Set 10: 91.67%
+Accuracy: 93.68 +- 3.32
+
+./kNN -t votes.mff -k 5 >> results.txt
+10-fold cross validation with k-NN (k=5)
+Test Set 1: 95.24%
+Test Set 2: 97.56%
+Test Set 3: 85.42%
+Test Set 4: 91.18%
+Test Set 5: 90.00%
+Test Set 6: 91.89%
+Test Set 7: 93.02%
+Test Set 8: 90.48%
+Test Set 9: 96.88%
+Test Set 10: 95.24%
+Accuracy: 92.69 +- 3.69
+
+./kNN -t votes.mff -k 7 >> results.txt
+10-fold cross validation with k-NN (k=7)
+Test Set 1: 100.00%
+Test Set 2: 95.35%
+Test Set 3: 95.12%
+Test Set 4: 97.83%
+Test Set 5: 97.44%
+Test Set 6: 89.47%
+Test Set 7: 90.32%
+Test Set 8: 85.37%
+Test Set 9: 95.35%
+Test Set 10: 82.98%
+Accuracy: 92.92 +- 5.63

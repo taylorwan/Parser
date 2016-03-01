@@ -54,11 +54,3 @@ class Examples(list):
 
         # adding to list
         self.add(ex)
-
-    def main(self):
-        print
-        print "Examples::main"
-        ex = "trek knobby straight y 250.3 mountain\nbridgestone treads straight y 200 hybrid\ncannondale knobby curved n 222.9 mountain\nnishiki treads curved y 190.3 hybrid\ntrek treads straight y 196.8 hybrid"
-        for line in ex.split("\n"):
-            self.parse(line)
-        print "self: {}".format(self)

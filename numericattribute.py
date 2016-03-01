@@ -11,9 +11,3 @@ class NumericAttribute(Attribute):
 
     def __repr__(self):
         return self.__str__()
-
-    def main(self):
-        print
-        print "NumericAttribute::main"
-        print "self: {}".format(self)
-        print "self.getSize(): {}".format(self.getSize())

@@ -32,9 +32,7 @@ class NaiveBayes(Classifier):
             # nominal values
             elif isinstance(a, NominalAttribute):
                 counts.append(self.countNominal(inst, i, domain))
-            # numeric values
-            # else:
-            #     pass
+            # ignore numeric values
 
         # calculate and return the index with the highest probability
         p = self.calcP(counts, domain)
@@ -50,7 +48,6 @@ class NaiveBayes(Classifier):
         for i, c in enumerate(counts):
             s = sum(c.values())
             for k in c:
-                # print "{}:".format(k), i, c, c[k], "/", float(s)
                 p[k] *= c[k]/float(s)
 
         # return normalized values
@@ -86,18 +83,18 @@ class NaiveBayes(Classifier):
 
 ## initialize and evaluate
 def main():
-    # try:
+    try:
         ds = TrainTestSets(sys.argv)
         if len(ds.getTrainingSet().getExamples()) > 0:
             if len(ds.getTestingSet().getExamples()) > 0:
                 Evaluator(NaiveBayes()).evaluate(ds.getTrainingSet(), ds.getTestingSet())
             else:
                 Evaluator(NaiveBayes()).evaluate(ds.getTrainingSet())
-    # except Exception as e:
-    #     if len(e.args) == 1:
-    #         print e.args[0]
-    #     else:
-    #         print e.args[1]
+    except Exception as e:
+        if len(e.args) == 1:
+            print e.args[0]
+        else:
+            print e.args[1]
 
 
 if __name__ == "__main__":

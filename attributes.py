@@ -66,27 +66,3 @@ class Attributes(object):
         s = m.make(scanner)
         self.attributes.append(s)
         self.setClassIndex(self.getSize()-1)
-
-    def main(self):
-        print
-        print "Attributes::main"
-        print "self: {}".format(self)
-
-        lines = "@attribute make trek bridgestone cannondale nishiki garyfisher\n@attribute tires knobby treads\n@attribute bars straight curved\n@attribute bottles y n\n@attribute weight numeric\n@attribute type mountain hybrid"
-        for line in lines.split("\n"):
-            self.parse(line)
-
-        print "self: {}".format(self)
-        print "self.getSize(): {}".format(self.getSize())
-        print "self.get(0): {}".format(self.get(0))
-        print "self.getHasNominalAttributes(): {}".format(self.getHasNominalAttributes())
-        print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
-        print "self.getIndex(\"hey\"): {}".format(self.getIndex("hey"))
-        print "self.getClassIndex(): {}".format(self.getClassIndex())
-        print "self.get(getClassIndex()): {}".format(self.get(self.getClassIndex()))
-        print "self.getClassAttribute(): {}".format(self.getClassAttribute())
-        print "self.setClassIndex(0): {}".format(self.setClassIndex(0))
-        print "self.add(NumericAttribute(\"num\")): {}".format(self.add(NumericAttribute("num")))
-        print "self: {}".format(self)
-        print "self.getIndex(\"num\")): {}".format(self.getIndex("num"))
-        print "self.getHasNumericAttributes(): {}".format(self.getHasNumericAttributes())
