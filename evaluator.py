@@ -14,11 +14,14 @@ class Evaluator(object):
         self.setOptions(sys.argv)
 
     def __str__(self):
+        if len(self.performance) == 1:
+            return "{}\nAccuracy: {:.{prec}f}%".format(self.classifier, self.avgPerf, prec=2)
         output = "{}-fold cross validation with {}\n".format(self.folds, self.classifier)
         for i, p in enumerate(self.performance):
             output += "Test Set {}: {:.{prec}f}%\n".format(i+1, p, prec=2)
         output += "Accuracy: {:.{prec}f} +- {:.{prec}f}".format(self.avgPerf, self.accuracy, prec=2)
         return output
+
 
     def __repr__(self):
         return self.__str__()
@@ -39,7 +42,7 @@ class Evaluator(object):
     ## calculate the standard variation for a list of values
     def std(self, l):
         avg = self.avg(l)
-        var = sum([pow(x-avg, 2) for x in l])/float(len(l)-1)
+        var = sum([pow(x-avg, 2) for x in l])/float(len(l))
         return math.sqrt(var)
 
     ## partition the training data randomly to create our test set

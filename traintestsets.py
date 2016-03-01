@@ -52,7 +52,7 @@ class TrainTestSets(object):
             self.train.load(opts[trainInd])
 
         # the test set is specified
-        elif testTag in opts:
+        if testTag in opts:
             self.mode = 2
             next = opts.index(testTag) + 1
             if next >= len(opts):  # index is out of bounds
