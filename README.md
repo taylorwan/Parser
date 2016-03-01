@@ -1,20 +1,43 @@
-# Parser
+# [Parser](https://github.com/taylorwan/Parser)
 Read, parse, store, and output examples in Mark's File Format (mff).
 
-Project 1 for COSC 288: Introduction to Machine Learning
+Project for COSC 288: Introduction to Machine Learning
 
-### To run
+### Running k-NN
 
 ```python
-python parser.py [-t][-T]
+./kNN [-t <path> [-T <path>]] [-x folds] [-k neighbors]
 ```
 
-`-t` to test
+### Running Naive Bayes
 
-`-T` to train
+```python
+./NaiveBayes [-t <path> [-T <path>]] [-x folds]
+```
 
-### To test
+### Options
 
-run `test()` from main to test all classes
+`-t` is an option in TrainTestSets
 
-You can use `bikes.mff` as test data
+* Requires one argument: <path>, which specifies the path to a training file
+
+`-T` is an option in TrainTestSets
+
+* Requires one argument: <path>, which specifies the path to a test file
+
+`-x` is an option in Evaluator
+
+* Requires one argument: folds, which specifies the # of folds to partition the training set when evaluating performance
+
+`-k` is an option in k-NN
+
+* Requires one argument: k, which specifies the # of closest neighbors to be used in making predictions
+
+`-s` is an option in DataSet
+
+* Generates a new seed
+
+### Testing
+
+You can use `votes.mff` and `mushroom.mff` as test data
+
