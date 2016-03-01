@@ -22,7 +22,6 @@ class Evaluator(object):
         output += "Accuracy: {:.{prec}f} +- {:.{prec}f}".format(self.avgPerf, self.accuracy, prec=2)
         return output
 
-
     def __repr__(self):
         return self.__str__()
 
@@ -32,7 +31,7 @@ class Evaluator(object):
         if x in opts:
             next = opts.index(x) + 1
             if next >= len(opts):
-                raise SyntaxError("Missing argument for -x")
+                loadOptionsError(opts, "Missing argument for -x")
             self.folds = int(opts[next])
 
     ## calculate the average for a list of values

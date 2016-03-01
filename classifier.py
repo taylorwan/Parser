@@ -45,3 +45,16 @@ class Classifier(object):
                 perf += 1
         avgPerf = perf * 100.0 / len(self.instances.getExamples())
         return Performance(avgPerf)
+
+
+## throw an error message with the correct syntax for options
+def loadOptionsError(self, opts, msg="Invalid Syntax"):
+    base = " [-t <path> [-T <path>]] [-x folds]"
+    knnSyntax = "./kNN" + base + " [-k neighbors]"
+    nbSyntax = "./NaiveBayes" + base
+    if './kNN' in opts:
+        raise SyntaxError(msg + "\n" + knnSyntax)
+    elif './NaiveBayes' in opts:
+        raise SyntaxError(msg + "\n" + nbSyntax)
+    else:
+        raise SyntaxError(msg + "\n" + knnSyntax + "\n" + nbSyntax)

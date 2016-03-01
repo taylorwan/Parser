@@ -34,7 +34,7 @@ class kNN(Classifier):
         if k in opts:
             next = opts.index(k) + 1
             if next >= len(opts):
-                raise SyntaxError("Missing argument for -k")
+                loadOptionsError(opts, "Missing argument for -k")
             self.k = int(opts[next])
 
     ## calculate the distance between two examples

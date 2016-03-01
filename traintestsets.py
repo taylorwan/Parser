@@ -48,7 +48,7 @@ class TrainTestSets(object):
             self.mode = 1
             trainInd = opts.index(trainTag) + 1
             if trainInd >= len(opts):  # index is out of bounds
-                self.loadOptionsError(opts, "Missing argument")
+                loadOptionsError(opts, "Missing argument")
             self.train.load(opts[trainInd])
 
         # the test set is specified
@@ -56,13 +56,13 @@ class TrainTestSets(object):
             self.mode = 2
             next = opts.index(testTag) + 1
             if next >= len(opts):  # index is out of bounds
-                self.loadOptionsError(opts, "Missing argument")
+                loadOptionsError(opts, "Missing argument")
             self.test.load(opts[next])
 
             # if no training set is specified and we're in test mode,
             # something went wrong
             if trainInd == -1:
-                self.loadOptionsError(opts, \
+                loadOptionsError(opts, \
                     "Missing training set. Commands must be in the following syntax:")
             else:
                 return
@@ -72,16 +72,4 @@ class TrainTestSets(object):
             return
 
         # if no other cases have matched, something's wrong
-        self.loadOptionsError(opts)
-
-    ## throw an error message with the correct syntax for options
-    def loadOptionsError(self, opts, msg="Invalid Syntax"):
-        base = " [-t <path> [-T <path>]] [-x folds]"
-        knnSyntax = "./kNN" + base + " [-k neighbors]"
-        nbSyntax = "./NaiveBayes" + base
-        if './kNN' in opts:
-            raise SyntaxError(msg + "\n" + knnSyntax)
-        elif './NaiveBayes' in opts:
-            raise SyntaxError(msg + "\n" + nbSyntax)
-        else:
-            raise SyntaxError(msg + "\n" + knnSyntax + "\n" + nbSyntax)
+        loadOptionsError(opts)
