@@ -22,6 +22,7 @@ class NominalAttribute(Attribute):
     def getDomain(self):  # error if the index is out of bounds
         return self.domain
 
+    # add a value to this attribute's domain
     def addValue(self, value):  # error if the value can not be added
         self.domain.append(value)
         self.size += 1

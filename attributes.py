@@ -51,6 +51,7 @@ class Attributes(object):
     def setClassIndex(self, classIndex):  # error if the class index is out of bounds
         self.classIndex = classIndex
 
+    ## add an attribute to our attribute list, and update which values we have
     def add(self, attribute):  # error if the attribute cannot be added because of type or memory problems
         self.attributes.append(attribute)
         if isinstance(attribute, NumericAttribute):
@@ -59,6 +60,7 @@ class Attributes(object):
             self.hasNominalAttributes = True
         return attribute
 
+    ## parse through a list of attributes, create and add them our list
     def parse(self, scanner):  # error if a parse error occurs
         m = AttributeFactory()
         s = m.make(scanner)

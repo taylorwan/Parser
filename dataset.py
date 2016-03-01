@@ -56,22 +56,33 @@ class DataSet(object):
         for line in scanner.split("\n"):
             if line == '':
                 continue
-
             words = line.split(" ")
+
+            # parse an example line
             if exampleSec:
                 self.examples.parse(line)
+            # parse the dataset header
             elif words[0] == '@dataset':
                 self.name = words[1]
+            # parse an attribute line
             elif words[0] == '@attribute':
                 self.attributes.parse(line)
+
+            # if we encounter the word @examples, all
+            # remaining lines are examples
             elif words[0] == '@examples':
                 exampleSec = True
+
+            # unknown case, the file does not follow correct .mff grammar
+            else:
+                raise RuntimeError("File does not follow correct .mff grammar")
 
     ## parse through command line options
     def setOptions(self, opts):  # error if an option is illegal
         if '-s' in opts:
             setSeed(random.random())
 
+    ## generate a random number for our seed
     def setSeed(self):
         self.seed = random.random()
 

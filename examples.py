@@ -39,12 +39,20 @@ class Examples(list):
     def parse(self, scanner):
         attr = scanner.split(" ")
         ex = Example(len(attr))
+
+        # for each attribute, add the value from our example
         for i, a in enumerate(attr):
             curAttr = self.attributes[i]
+
+            # if the attribute is nominal, add the index
             if isinstance(curAttr, NominalAttribute):
                 ex.add(curAttr.getIndex(a))
+
+            # if the attribute is numeric, add the value
             elif isinstance(curAttr, NumericAttribute):
                 ex.add(float(a))
+
+        # adding to list
         self.add(ex)
 
     def main(self):

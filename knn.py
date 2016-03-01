@@ -28,6 +28,7 @@ class kNN(Classifier):
     def __repr__(self):
         return self.__str__()
 
+    ## parse through command line options
     def setOptions(self, opts):
         k = '-k'
         if k in opts:
@@ -36,6 +37,7 @@ class kNN(Classifier):
                 raise SyntaxError("Missing argument")
             self.k = int(opts[next])
 
+    ## calculate the distance between two examples
     def calcDist(self, inst, ex):
         dist = 0
         for i in range(len(inst)-1):
@@ -43,11 +45,18 @@ class kNN(Classifier):
                 dist += 1
         return dist
 
+    ## return the closest k values given an array with
+    ## format [[distance1, C1], [distance2, C2], ... ]
     def closestK(self, l):
         l.sort()
         return l[:self.k]
 
+    ## given a list of k closest neighbors with the format
+    ## [[distance1, C1], [distance2, C2], ... ]
+    ## determine the most comon class index, and return it
     def calcVote(self, l):
+        if len(l) < 1:
+            raise RuntimeError("Empty list")
         votes = {}
         for t in l:
             if t[1] in votes:
@@ -57,9 +66,11 @@ class kNN(Classifier):
         self.vote = self.getMaxValueKey(votes)
         return self.vote
 
+    ## return the key with the highest value in a dictionary
     def getMaxValueKey(self, v):
         return max(v.iteritems(), key=operator.itemgetter(1))[0]
 
+    ## determine probability for a single example (test)
     def classify(self, inst):
         results = []
         # create list of indicies [distance, classIndex] for each example
@@ -77,7 +88,6 @@ def main():
             if len(ds.getTestingSet().getExamples()) > 0:
                 Evaluator(kNN()).evaluate(ds.getTrainingSet(), ds.getTestingSet())
             else:
-                print "here"
                 Evaluator(kNN()).evaluate(ds.getTrainingSet())
     except Exception as e:
         if len(e.args) == 1:

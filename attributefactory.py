@@ -12,6 +12,8 @@ class AttributeFactory(object):
     def __repr__(self):
         return self.__str__()
 
+    ## parse an attribute descriptor, and create the
+    ## object accordingly
     def make(self, scanner):
         l = scanner.split(" ")
         # l[0] is the attribute tag, so we don't need it

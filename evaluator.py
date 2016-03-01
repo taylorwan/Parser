@@ -46,12 +46,21 @@ class Evaluator(object):
     def createTestSet(self, ds, offset=0):
         self.classifier.examples = DataSet(ds.getAttributes())
         self.classifier.instances = DataSet(ds.getAttributes())
+
+        # use our seed to determine if the current example should
+        # be partitioned into the training or test set
         for ex in ds.getExamples():
             i = int(ds.getSeed() * self.folds)
+
+            # add to test set if the random number matches our "offset"
             if i % self.folds == offset:
                 self.classifier.instances.addExample(ex)
+
+            # otherwise, add it to our training set
             else:
                 self.classifier.examples.addExample(ex)
+
+            # choose a new random number
             ds.setSeed()
 
     ## evaluate the performance over our test sets
@@ -67,7 +76,6 @@ class Evaluator(object):
             self.classifier.setExamples(ds)
             self.classifier.setInstances(test)
             self.performance.append(self.classifier.classifySet(ds).getAccuracy())
-            print len(self.classifier.examples.getExamples()), len(self.classifier.instances.getExamples())
 
         # otherwise, randomly create combinations of test sets and
         # training sets until our test set is not empty
@@ -77,8 +85,6 @@ class Evaluator(object):
                 while (len(self.classifier.getInstances().getExamples()) < 1):
                     self.createTestSet(ds, i)
                 self.performance.append(self.classifier.classifySet(ds).getAccuracy())
-
-                print len(self.classifier.examples.getExamples()), len(self.classifier.instances.getExamples())
 
         # calculate and print our performance
         self.avgPerf = self.avg(self.performance)
