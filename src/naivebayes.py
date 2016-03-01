@@ -1,3 +1,15 @@
+#
+# Taylor Wan
+# tw476@georgetown.edu
+# Platform: OS X
+# Language/Environment: python
+#
+# In accordance with the class policies and Georgetown's Honor Code,
+# I certify that, with the exceptions of the class resources and those
+# items noted below, I have neither given nor received any assistance
+# on this project.
+#
+
 from classifier import *
 from traintestsets import *
 

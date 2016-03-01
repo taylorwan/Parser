@@ -3,13 +3,13 @@ Read, parse, store, and output examples in Mark's File Format (mff).
 
 Project for COSC 288: Introduction to Machine Learning
 
-### Running k-NN
+## Running k-NN
 
 ```python
 ./kNN [-t <path> [-T <path>]] [-x folds] [-k neighbors]
 ```
 
-### Running Naive Bayes
+## Running Naive Bayes
 
 ```python
 ./NaiveBayes [-t <path> [-T <path>]] [-x folds]
@@ -29,7 +29,7 @@ Project for COSC 288: Introduction to Machine Learning
 
 * Requires one argument: folds, which specifies the # of folds to partition the training set when evaluating performance
 
-`-k` is an option in k-NN
+`-k` is an option in kNN
 
 * Requires one argument: k, which specifies the # of closest neighbors to be used in making predictions
 
@@ -39,5 +39,5 @@ Project for COSC 288: Introduction to Machine Learning
 
 ### Testing
 
-You can use `votes.mff` and `mushroom.mff` as test data
+You can use `test/votes.mff` and `test/mushroom.mff` as test data
 
