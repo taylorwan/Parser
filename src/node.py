@@ -1,6 +1,6 @@
 class Node(object):
 
-    def __init__(self, children=[], label=-1, attribute=-1):
+    def __init__(self, attribute=None, label=-1, children=[]):
         self.children = children
         self.label = label
         self.attribute = attribute

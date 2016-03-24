@@ -44,6 +44,7 @@ class Attributes(object):
         for i, a in enumerate(self.attributes):
             if a.name == name:
                 return i
+        raise RuntimeError("Invalid Label " + name)
 
     def getClassIndex(self):  # error if the class index is out of range
         return self.classIndex

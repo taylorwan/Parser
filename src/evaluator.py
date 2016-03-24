@@ -65,8 +65,29 @@ class Evaluator(object):
             # choose a new random number
             ds.setSeed()
 
-    ## evaluate the performance over our test sets
+    ## evaluate the performance over our test sets using cross validation
     def evaluate(self, ds, test=None):
+        # if we are given a test set, use the test set
+        if test is not None:
+            self.classifier.setExamples(ds)
+            self.classifier.setInstances(test)
+            self.performance.append(self.classifier.classifySet(ds).getAccuracy())
+
+        # otherwise, randomly create combinations of test sets and
+        # training sets until our test set is not empty
+        else:
+            self.createTestSet(ds)
+            while (len(self.classifier.getInstances().getExamples()) < 1):
+                self.createTestSet(ds)
+            self.performance.append(self.classifier.classifySet(ds).getAccuracy())
+
+        # calculate and print our performance
+        self.avgPerf = self.performance[0]
+        print self
+
+
+    ## evaluate the performance over our test sets using cross validation
+    def crossValidationEvaluate(self, ds, test=None):
         # if we don't have as many examples as the # of folds
         # currently set, reduce the # of folds until we have
         # at least one example per fold
