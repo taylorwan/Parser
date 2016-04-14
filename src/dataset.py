@@ -89,6 +89,9 @@ class DataSet(object):
     def setSeed(self):
         self.seed = random.random()
 
+
+    ### ID3 ###
+
     ## create decision tree
     def train(self, node=None, attr=None, maj=None):
         classIndex = self.attributes.getClassIndex()
@@ -118,9 +121,6 @@ class DataSet(object):
 
         n.setChildren(children)
 
-        # for ch in n.getChildren():
-        #     print ch
-
         return n
 
     # # split along a certain attribute
@@ -137,7 +137,8 @@ class DataSet(object):
 
         return ds
 
-    ## returns the information gain if we split along a specified attribute
+    ## returns the information gain if we split along a specified
+    ## attribute
     def gain(self, a, classIndex):
         g = self.entropy(self.counts)  # start with entropy of the current set
         ds = self.split(a)  # split into children
@@ -188,7 +189,8 @@ class DataSet(object):
             if c == v:
                 return i
 
-    ## count the number of examples per class label in the current data set
+    ## count the number of examples per class label in the current
+    ## data set
     def countSet(self, classIndex):
         domain = self.attributes.getClassAttribute().getDomain()
         counts = [0 for x in range(len(domain))]
@@ -199,13 +201,14 @@ class DataSet(object):
 
         return counts
 
-    ## return the attribute that we should split on at a particular node
+    ## return the attribute that we should split on at a
+    ## particular node
     def getBestSplittingAttribute(self, classIndex):
         best = -1  # max gain
         bestAttr = -1  # best attribute
 
-        # loop through all attributes (except class attr) to find the
-        # one that produces max gain
+        # loop through all attributes (except class attr) to find
+        # the one that produces max gain
         for i, a in enumerate(self.attributes.getAttributes()):
             if i == classIndex:
                 continue
@@ -214,3 +217,83 @@ class DataSet(object):
                 best = g
                 bestAttr = a
         return bestAttr
+
+    ### BP ###
+
+    ## translate the current attriutes to binary encoding
+    def nominalToBinary(self):
+        ds = DataSet(Attributes())
+        self.convertAttr(ds)
+        for e in self.examples:
+            self.convertExample(e, ds)
+        return ds
+
+    ## reformats attributes
+    def convertAttr(self, ds):
+        for a in self.attributes.attributes:
+
+            # if a is numeric, append it to our list
+            if isinstance(a, NumericAttribute):
+                ds.getAttributes().add(a)
+                continue
+
+            # since a is nominal, get its domain
+            d = a.getDomain()
+            l = len(d)
+
+            # if a is already binary, proceed
+            if l <= 2:
+                ds.getAttributes().add(a)
+                continue
+
+            # else, use binary encoding to create multiple buckets
+            buckets = self.findSmallestBits(l)
+            for i in range(buckets):
+                b = NominalAttribute(a.name + str(i))
+                b.addValue("0")
+                b.addValue("1")
+                ds.getAttributes().add(b)
+
+        return ds.getAttributes()
+
+    ## reformats a single example
+    def convertExample(self, e, ds):
+        ex = Example(len(ds.getAttributes().getAttributes()))
+        for i, a in enumerate(self.attributes.attributes):
+
+            # if a is numeric, append it to our list
+            if isinstance(a, NumericAttribute):
+                ex.append(e[i])
+                continue
+
+            # since a is nominal, get its domain
+            d = a.getDomain()
+            l = len(d)
+
+            # if a is already binary, proceed
+            if l <= 2:
+                ex.append(e[i])
+                continue
+
+            # else, determine the binary value and append
+            ind = self.processBin(e[i], self.findSmallestBits(l))
+            for c in ind:
+                ex.append(int(c))
+
+        ds.addExample(ex)
+        return ex
+
+    ## find the smallest exp such that 2^exp > n
+    def findSmallestBits(self, n):
+        exp = 1
+        while 2 ** exp < n:
+            exp += 1
+        return exp
+
+    ## given numbers n and b, convert n to the string of a
+    ## binary number
+    def processBin(self, n, b):
+        s = str(bin(n))[2:]
+        while len(s) < b:
+            s = "0" + s
+        return s
