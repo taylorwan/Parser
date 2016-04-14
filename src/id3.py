@@ -40,6 +40,17 @@ class ID3(Classifier):
             except Exception as e:
                 loadOptionsError(opts, "Invalid argument for -p")
 
+    def classifySet(self, ds):
+        root = ds.train()
+        perf = 0
+        for inst in self.instances.getExamples():
+            self.vote = self.classify(inst, root)
+            if self.vote == inst[-1]:
+                perf += 1
+        avgPerf = perf * 100.0 / len(self.instances.getExamples())
+        return Performance(avgPerf)
+
+
     ## determine probability for a single example (test)
     def classify(self, inst, root):
         c = root

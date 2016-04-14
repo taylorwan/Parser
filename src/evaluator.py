@@ -46,6 +46,7 @@ class Evaluator(object):
 
     ## partition the training data randomly to create our test set
     def createTestSet(self, ds, offset=0):
+        print "creating test set"
         self.classifier.examples = DataSet(ds.getAttributes())
         self.classifier.instances = DataSet(ds.getAttributes())
 
@@ -65,8 +66,29 @@ class Evaluator(object):
             # choose a new random number
             ds.setSeed()
 
-    ## evaluate the performance over our test sets using cross validation
+    ## partition the training data and randomly hold out data
+    def holdOutTestSet(self, ds, p=.1):
+        print "creating test set"
+        self.classifier.examples = DataSet(ds.getAttributes())
+        self.classifier.instances = DataSet(ds.getAttributes())
+
+        # use our seed to determine if the current example should
+        # be partitioned into the training or test set
+        for ex in ds.getExamples():
+            i = ds.getSeed()
+
+            # add to training set
+            if i > p:
+                self.classifier.instances.addExample(ex)
+
+            # choose a new random number
+            ds.setSeed()
+
+    ## evaluate the performance over our test sets using hold-out
     def evaluate(self, ds, test=None):
+        print "starting point from evaluate"
+        print ds.nominalToBinary()
+
         # if we are given a test set, use the test set
         if test is not None:
             self.classifier.setExamples(ds)
@@ -76,18 +98,19 @@ class Evaluator(object):
         # otherwise, randomly create combinations of test sets and
         # training sets until our test set is not empty
         else:
-            self.createTestSet(ds)
+            self.holdOutTestSet(ds)
             while (len(self.classifier.getInstances().getExamples()) < 1):
-                self.createTestSet(ds)
-            self.performance.append(self.classifier.classifySet(ds).getAccuracy())
+                self.holdOutTestSet(ds)
+                print ds
+            if ds:
+                self.performance.append(self.classifier.classifySet(ds).getAccuracy())
 
-        # calculate and print our performance
+        # # calculate and print our performance
         self.avgPerf = self.performance[0]
         print self
 
-
     ## evaluate the performance over our test sets using cross validation
-    def crossValidationEvaluate(self, ds, test=None):
+    def crossValidateEvaluate(self, ds, test=None):
         # if we don't have as many examples as the # of folds
         # currently set, reduce the # of folds until we have
         # at least one example per fold

@@ -38,10 +38,9 @@ class Classifier(object):
     ## determine values and return the average performance
     ## for all examples (our test set)
     def classifySet(self, ds):
-        root = ds.train()
         perf = 0
         for inst in self.instances.getExamples():
-            self.vote = self.classify(inst, root)
+            self.vote = self.classify(inst)
             if self.vote == inst[-1]:
                 perf += 1
         avgPerf = perf * 100.0 / len(self.instances.getExamples())
@@ -53,12 +52,15 @@ def loadOptionsError(self, opts, msg="Invalid Syntax"):
     base = " [-t <path> [-T <path>]] [-x folds]"
     knnSyntax = "kNN" + base + " [-k neighbors]"
     nbSyntax = "NaiveBayes" + base
-    id3Syntax = "id3" + base + " [-p proportion]"
+    id3Syntax = "ID3" + base + " [-p proportion]"
+    bpSyntax = "BP" + base
     if './kNN' in opts or 'knn.py' in opts:
         raise SyntaxError(msg + "\n" + knnSyntax)
     elif './NaiveBayes' in opts or 'naivebayes.py' in opts:
         raise SyntaxError(msg + "\n" + nbSyntax)
     elif './ID3' in opts or 'id3.py' in opts:
         raise SyntaxError(msg + "\n" + id3Syntax)
+    elif './BP' in opts or 'bp.py' in opts:
+        raise SyntaxError(msg + "\n" + bpSyntax)
     else:
-        raise SyntaxError(msg + "\n" + knnSyntax + "\n" + nbSyntax + "\n" + id3Syntax)
+        raise SyntaxError(msg + "\n" + knnSyntax + "\n" + nbSyntax + "\n" + id3Syntax + "\n" + bpSyntax)

@@ -62,8 +62,7 @@ class TrainTestSets(object):
             # if no training set is specified and we're in test mode,
             # something went wrong
             if trainInd == -1:
-                loadOptionsError(opts, \
-                    "Missing training set. Commands must be in the following syntax:")
+                loadOptionsError(opts, "Missing training set. Commands must be in the following syntax:")
             else:
                 return
 
