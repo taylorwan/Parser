@@ -70,7 +70,7 @@ class kNN(Classifier):
     def getMaxValueKey(self, v):
         return max(v.iteritems(), key=operator.itemgetter(1))[0]
 
-    ## determine probability for a single example (test)
+    ## predict outcome of a single example (test)
     def classify(self, inst):
         results = []
         # create list of indicies [distance, classIndex] for each example

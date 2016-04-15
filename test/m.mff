@@ -1,0 +1,10 @@
+@dataset mushroom
+
+@attribute cap-shape b c x f k s
+@attribute cap-surface f g y s
+@attribute class e p
+
+@examples
+
+x s e
+x f e

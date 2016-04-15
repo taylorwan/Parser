@@ -7,7 +7,7 @@ from node import *
 
 class DataSet(object):
     def __init__(self, attributes=Attributes()):  # error if the examples can not be added because of type or memory problems
-        self.name = 'Unnamed'
+        self.name = ''
         self.attributes = attributes
         self.examples = Examples(attributes)
         self.seed = -1
@@ -222,15 +222,16 @@ class DataSet(object):
 
     ## translate the current attriutes to binary encoding
     def nominalToBinary(self):
+        # print "nominalToBinary"
         ds = DataSet(Attributes())
-        self.convertAttr(ds)
+        classAttr = self.attributes.getClassAttribute()
+        self.convertAttr(ds, classAttr)
         for e in self.examples:
-            self.convertExample(e, ds)
+            self.convertExample(e, ds, classAttr)
         return ds
 
     ## reformats attributes
-    def convertAttr(self, ds):
-        classAttr = self.attributes.getClassAttribute()
+    def convertAttr(self, ds, classAttr):
         for a in self.attributes.attributes:
             if a == classAttr:
                 ds.getAttributes().add(a)
@@ -261,9 +262,12 @@ class DataSet(object):
         return ds.getAttributes()
 
     ## reformats a single example
-    def convertExample(self, e, ds):
+    def convertExample(self, e, ds, classAttr):
         ex = Example(len(ds.getAttributes().getAttributes()))
         for i, a in enumerate(self.attributes.attributes):
+            if a == classAttr:
+                ex.append(e[i])
+                continue
 
             # if a is numeric, append it to our list
             if isinstance(a, NumericAttribute):

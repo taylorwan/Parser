@@ -19,19 +19,28 @@ class BP(Classifier):
         super(BP, self).__init__(e, i)
         self.setOptions(sys.argv[1:])
         self.type = 'BP'
+        self.result = None
+
         self.i = -1
-        self.j = 3
+        self.j = 3  # 2 hidden nodes + bias node
         self.k = -1
+
         self.w = []
         self.v = []
-        self.n = 0.9
+
+        self.bias = -1
         self.e = 1.0
+        self.n = 0.9
         self.emin = 0.1
         self.random = 0.3
-        self.decimal = 3
+        self.maxQ = 3000
+        self.threshhold = 0.5
 
     def __str__(self):
-        return super(BP, self).__str__()
+        output = super(BP, self).__str__()
+        if self.result is not None:
+            output += ": " + self.result
+        return output
 
     def __repr__(self):
         return self.__str__()
@@ -46,120 +55,96 @@ class BP(Classifier):
                 loadOptionsError(opts, "Missing argument for -p")
             try:
                 self.p = float(opts[next])
-            except Exception as e:
+            except Exception:
                 loadOptionsError(opts, "Invalid argument for -p")
 
-    ## determine probability for a single example (test)
+    ##
+    ## Classify
+    ##
+
+    ## predict outcome of a single example (test)
     def classify(self, inst):
-        print self.examples
-        print self.instances
+        y = self.calcY(inst)
+        o = self.calcO(y)
+        return self.interpretO(o)
 
-    def train(self, ds):
+    ##
+    ## Train
+    ##
+
+    ## train our classifier with example set ds
+    def train(self, ds=None):
+
         # initializing
-        self.trainInit(ds)
-
+        self.trainInit()
         q = 1  # epochs
+
+        # keep running until E > Emin
         while (self.e > self.emin):
             self.e = 0
-            for z in ds.getExamples():
-                self.trainExample(ds, z)
-            q += 1
-        print self.e
 
-    def trainInit(self, ds):
-        self.i = len(ds.attributes.attributes)
-        self.k = len(ds.attributes.attributes[-1].getDomain())
+            # run on each example
+            for ex in self.examples.getExamples():
+
+                # make a deep copy of our example
+                z = Example(ex.getN())
+                for val in ex:
+                    z.add(val)
+
+                # train
+                self.trainExample(z)
+
+            # quit if we've run too many epochs
+            if q > self.maxQ:
+                raise RuntimeError("Failed to converge after {} epochs, with an error of {:.3f}".format(q, self.e))
+
+            # increment
+            q += 1
+
+        self.result = "Set converted after {} epochs, with an error of {:.3f}".format(q, self.e)
+
+    # initialize values (step #1)
+    def trainInit(self):
+        self.i = len(self.examples.attributes.attributes)
+        self.k = len(self.examples.attributes.attributes[-1].getDomain())
         self.initWeights()
 
-    def trainExample(self, ds, z):
-        ##
+    # run a single epoch (steps #2-6)
+    def trainExample(self, z):
+        # swap out class label and replace it with our bias
+        classAttr = z[-1]
+        z[-1] = self.bias
+
         # step 2: compute
-        ##
+        y = self.calcY(z)  # calculate y
+        o = self.calcO(y)  # calculate o
+        d = self.encodeD(classAttr)  # linearly encode class attribute (d)
 
-        y = []
-        o = []
-        d = []
-
-        bias = -1
-        d_holder = z[-1]
-        z[-1] = bias  # setting class label to our bias
-
-        # calculate y
-        for j_n in range(self.j-1):
-            y_n = 0
-            for i_n in range(self.i):
-                y_n += z[i_n] * self.v[i_n][j_n]
-            y.append(self.sigmoid(y_n))
-        y.append(bias)
-        # print "y is:", y
-
-        # calculate o
-        for k_n in range(self.k):
-            o_n = 0
-            for j_n in range(self.j):
-                o_n += y[j_n] * self.w[j_n][k_n]
-            o.append(self.sigmoid(o_n))
-        # print "o is:", o
-
-        # linearly encode class attribute (d)
-        for k_n in range(self.k):
-            if k_n == d_holder:
-                d.append(1)
-                continue
-            d.append(0)
-
-        ##
         # step 3: calculate error
-        ##
+        self.calcE(d, o)
 
-        for k_n in range(self.k):
-            self.e += 0.5 * (d[k_n] - o[k_n]) ** 2
-        # print "e is:", self.e
-
-        ##
         # step 4: calculate error signal vectors
-        ##
+        sigO = self.calcSigO(o, d)
+        sigY = self.calcSigY(sigO, y)
 
-        sigO = []
-        sigY = []
-
-        for k_n in range(self.k):
-            ok = o[k_n]
-            dk = d[k_n]
-            sigO.append(round((dk-ok)*(1-ok)*ok, self.decimal))
-
-        # print "sigO is:", sigO
-
-        for j_n in range(self.j):
-            kSum = 0
-            for k_n in range(self.k):
-                kSum += sigO[k_n] * self.w[j_n][k_n]
-            yj = y[j_n]
-            sigY.append(round(yj*(1-yj)*kSum, self.decimal))
-
-        # print "sigY is:", sigY
-
-        ##
         # step 5: adjust output layer weights
-        ##
+        self.adjW(sigO, y)
 
-        for j_n in range(self.j):
-            for k_n in range(self.k):
-                self.w[j_n][k_n] = round(self.w[j_n][k_n] + self.n * sigO[k_n] * y[j_n], self.decimal)
-        # print "adjusted w:", self.w
-
-        ##
         # step 6: adjust hidden layer weights
-        ##
+        self.adjV(sigY, z)
 
-        for i_n in range(self.i):
-            for j_n in range(self.j):
-                self.v[i_n][j_n] = round(self.v[i_n][j_n] + self.n * sigY[j_n] * z[i_n], self.decimal)
-        # print "adjusted v:", self.v
+    ##
+    ## Helper Functions
+    ##
+
+    def randomize(self):
+        # return 0.1
+        return random.random()*self.random
 
     def sigmoid(self, n):
-        return round(1.0/(1 + math.e**(-n)), self.decimal)
+        return 1.0/(1 + math.e**(-n))
 
+    # step 1
     def initWeights(self):
         self.initV()
         self.initW()
@@ -182,11 +167,85 @@ class BP(Classifier):
             self.w.append(r)
         return self.w
 
-    def randomize(self):
-        return round(random.random()*self.random, self.decimal)
+    # step 2
+    def calcY(self, z):
+        y = []
+        for j_n in range(self.j-1):
+            y_n = 0
+            for i_n in range(self.i):
+                y_n += z[i_n] * self.v[i_n][j_n]
+            y.append(self.sigmoid(y_n))
+        y.append(self.bias)
+        return y
+
+    def calcO(self, y):
+        o = []
+        for k_n in range(self.k):
+            o_n = 0
+            for j_n in range(self.j):
+                o_n += y[j_n] * self.w[j_n][k_n]
+            o.append(self.sigmoid(o_n))
+        return o
+
+    def encodeD(self, classAttr):
+        d = []
+        for k_n in range(self.k):
+            if k_n == classAttr:
+                d.append(1)
+            else:
+                d.append(0)
+        return d
+
+    # step 3
+    def calcE(self, d, o):
+        for k_n in range(self.k):
+            self.e += 0.5 * (d[k_n] - o[k_n]) ** 2
+
+    # step 4
+    def calcSigO(self, o, d):
+        sigO = []
+        for k_n in range(self.k):
+            ok = o[k_n]
+            dk = d[k_n]
+            sigO.append((dk-ok)*(1-ok)*ok)
+        return sigO
+
+    def calcSigY(self, sigO, y):
+        sigY = []
+        for j_n in range(self.j):
+            kSum = 0
+            for k_n in range(self.k):
+                kSum += sigO[k_n] * self.w[j_n][k_n]
+            yj = y[j_n]
+            sigY.append(yj*(1-yj)*kSum)
+        return sigY
+
+    # step 5
+    def adjW(self, sigO, y):
+        for j_n in range(self.j):
+            for k_n in range(self.k):
+                self.w[j_n][k_n] += self.n * sigO[k_n] * y[j_n]
+
+    # step 6
+    def adjV(self, sigY, z):
+        for i_n in range(self.i):
+            for j_n in range(self.j):
+                self.v[i_n][j_n] += self.n * sigY[j_n] * z[i_n]
+
+    def interpretO(self, o):
+        maxV = 0
+        maxVInd = -1
+        for i, v in enumerate(o):
+            if v > maxV:
+                maxV = v
+                maxVInd = i
+        return maxVInd
 
 
-## initialize and evaluate
+##
+## Main
+##
+
 def main():
     # try:
         ds = TrainTestSets(sys.argv)

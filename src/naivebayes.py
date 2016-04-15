@@ -25,7 +25,7 @@ class NaiveBayes(Classifier):
     def __repr__(self):
         return self.__str__()
 
-    ## determine probability for a single example (test)
+    ## predict outcome of a single example (test)
     def classify(self, inst):
 
         # initialize helpers:

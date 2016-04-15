@@ -14,8 +14,10 @@ class Evaluator(object):
         self.setOptions(sys.argv)
 
     def __str__(self):
+        # if just one performance result
         if len(self.performance) == 1:
-            return "{}\nAccuracy: {:.{prec}f}%".format(self.classifier, self.avgPerf, prec=2)
+            return "{}\nAccuracy: {:.2f}%".format(self.classifier, self.avgPerf, prec=2)
+
         output = "{}-fold cross validation with {}\n".format(self.folds, self.classifier)
         for i, p in enumerate(self.performance):
             output += "Test Set {}: {:.{prec}f}%\n".format(i+1, p, prec=2)
@@ -75,12 +77,31 @@ class Evaluator(object):
         for ex in ds.getExamples():
             i = ds.getSeed()
 
-            # add to training set
-            if i > p:
+            if i > p:  # add to training set
+                self.classifier.examples.addExample(ex)
+            else:  # add to test set
                 self.classifier.instances.addExample(ex)
 
             # choose a new random number
             ds.setSeed()
+
+    def evaluate(self, ds, test=None):
+        self.holdOutEvaluate(ds, test)
+
+    # def evaluate2(self, ds):
+    #     # print "evaluate"
+    #     ds = ds.nominalToBinary()
+
+    #     self.createTestSet(ds)
+    #     while (len(self.classifier.getInstances().getExamples()) < 1):
+    #         self.createTestSet(ds)
+
+    #     self.classifier.train(ds)
+    #     self.performance.append(self.classifier.classifySet(ds).getAccuracy())
+
+    #     # # calculate and print our performance
+    #     self.avgPerf = self.performance[0]
+    #     print self
 
     ## evaluate the performance over our test sets using hold-out
     def holdOutEvaluate(self, ds, test=None):
@@ -100,18 +121,8 @@ class Evaluator(object):
             self.performance.append(self.classifier.classifySet(ds).getAccuracy())
 
         # # calculate and print our performance
-        self.avgPerf = self.performance[0]
+        self.avgPerf = self.avg(self.performance)
         print self
-
-    def evaluate(self, ds):
-        ds = ds.nominalToBinary()
-
-        self.createTestSet(ds)
-        while (len(self.classifier.getInstances().getExamples()) < 1):
-            self.createTestSet(ds)
-        self.classifier.train(ds)
-        # self.performance.append(self.classifier.classifySet(ds).getAccuracy())
-
 
     ## evaluate the performance over our test sets using cross validation
     def crossValidateEvaluate(self, ds, test=None):
