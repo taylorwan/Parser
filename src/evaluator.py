@@ -46,7 +46,6 @@ class Evaluator(object):
 
     ## partition the training data randomly to create our test set
     def createTestSet(self, ds, offset=0):
-        print "creating test set"
         self.classifier.examples = DataSet(ds.getAttributes())
         self.classifier.instances = DataSet(ds.getAttributes())
 
@@ -68,7 +67,6 @@ class Evaluator(object):
 
     ## partition the training data and randomly hold out data
     def holdOutTestSet(self, ds, p=.1):
-        print "creating test set"
         self.classifier.examples = DataSet(ds.getAttributes())
         self.classifier.instances = DataSet(ds.getAttributes())
 
@@ -85,10 +83,7 @@ class Evaluator(object):
             ds.setSeed()
 
     ## evaluate the performance over our test sets using hold-out
-    def evaluate(self, ds, test=None):
-        print "starting point from evaluate"
-        print ds.nominalToBinary()
-
+    def holdOutEvaluate(self, ds, test=None):
         # if we are given a test set, use the test set
         if test is not None:
             self.classifier.setExamples(ds)
@@ -101,13 +96,22 @@ class Evaluator(object):
             self.holdOutTestSet(ds)
             while (len(self.classifier.getInstances().getExamples()) < 1):
                 self.holdOutTestSet(ds)
-                print ds
-            if ds:
-                self.performance.append(self.classifier.classifySet(ds).getAccuracy())
+            self.classifier.train(ds)
+            self.performance.append(self.classifier.classifySet(ds).getAccuracy())
 
         # # calculate and print our performance
         self.avgPerf = self.performance[0]
         print self
+
+    def evaluate(self, ds):
+        ds = ds.nominalToBinary()
+
+        self.createTestSet(ds)
+        while (len(self.classifier.getInstances().getExamples()) < 1):
+            self.createTestSet(ds)
+        self.classifier.train(ds)
+        # self.performance.append(self.classifier.classifySet(ds).getAccuracy())
+
 
     ## evaluate the performance over our test sets using cross validation
     def crossValidateEvaluate(self, ds, test=None):

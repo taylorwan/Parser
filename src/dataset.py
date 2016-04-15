@@ -230,7 +230,11 @@ class DataSet(object):
 
     ## reformats attributes
     def convertAttr(self, ds):
+        classAttr = self.attributes.getClassAttribute()
         for a in self.attributes.attributes:
+            if a == classAttr:
+                ds.getAttributes().add(a)
+                break
 
             # if a is numeric, append it to our list
             if isinstance(a, NumericAttribute):
