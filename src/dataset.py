@@ -227,7 +227,6 @@ class DataSet(object):
 
     ## translate the current attriutes to binary encoding
     def nominalToBinary(self):
-        # print "nominalToBinary"
         ds = DataSet(Attributes())
         classAttr = self.attributes.getClassAttribute()
         self.convertAttr(ds, classAttr)

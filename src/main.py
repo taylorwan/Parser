@@ -18,7 +18,7 @@ from bp import *
 
 ## initialize and evaluate
 def main():
-    # try:
+    try:
         opts = sys.argv
         c = None  # classifier
         cInd = 1
@@ -40,11 +40,11 @@ def main():
             else:
                 Evaluator(c).evaluate(ds.getTrainingSet())
 
-    # except Exception as e:
-    #     if len(e.args) == 1:
-    #         print e.args[0]
-    #     else:
-    #         print e.args[1]
+    except Exception as e:
+        if len(e.args) == 1:
+            print e.args[0]
+        else:
+            print e.args[1]
 
 
 if __name__ == "__main__":

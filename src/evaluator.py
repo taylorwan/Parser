@@ -86,7 +86,6 @@ class Evaluator(object):
     ##
 
     def evaluate(self, ds, test=None):
-        print "evaluate"
         if self.classifier.type == 'Naive Bayes' or self.classifier.type == 'k-NN':
             self.crossValidateEvaluate(ds, test)
         elif self.classifier.type == 'ID3' or self.classifier.type == 'BP':

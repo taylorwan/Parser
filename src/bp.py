@@ -52,6 +52,9 @@ class BP(Classifier):
 
     ## train our classifier with example set ds
     def train(self, ds=None):
+        # convert both data sets
+        self.examples = self.examples.nominalToBinary()
+        self.instances = self.instances.nominalToBinary()
 
         # initializing
         self.trainInit()
@@ -75,10 +78,6 @@ class BP(Classifier):
             # quit if we've run too many epochs
             if q > self.maxQ:
                 raise RuntimeError("Failed to converge after {} epochs, with an error of {:.3f}".format(q, self.e))
-
-            ## printer, get rid of this later
-            if q % 10 == 0:
-                print q, self.e
 
             # increment
             q += 1
