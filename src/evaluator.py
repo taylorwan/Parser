@@ -86,6 +86,7 @@ class Evaluator(object):
     ##
 
     def evaluate(self, ds, test=None):
+        print "evaluate"
         if self.classifier.type == 'Naive Bayes' or self.classifier.type == 'k-NN':
             self.crossValidateEvaluate(ds, test)
         elif self.classifier.type == 'ID3' or self.classifier.type == 'BP':
@@ -99,7 +100,6 @@ class Evaluator(object):
         if test is not None:
             self.classifier.setExamples(ds)
             self.classifier.setInstances(test)
-            self.performance.append(self.classifier.classifySet(ds).getAccuracy())
 
         # otherwise, randomly create combinations of test sets and
         # training sets until our test set is not empty
@@ -107,8 +107,10 @@ class Evaluator(object):
             self.createHoldOutTestSet(ds)
             while (len(self.classifier.getInstances().getExamples()) < 1):
                 self.createHoldOutTestSet(ds)
-            self.classifier.train(ds)
-            self.performance.append(self.classifier.classifySet(ds).getAccuracy())
+
+        # train and get performance
+        self.classifier.train(ds)
+        self.performance.append(self.classifier.classifySet(ds).getAccuracy())
 
         # # calculate and print our performance
         self.avgPerf = self.avg(self.performance)
