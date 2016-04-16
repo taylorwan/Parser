@@ -1,15 +1,3 @@
-#
-# Taylor Wan
-# tw476@georgetown.edu
-# Platform: OS X
-# Language/Environment: python
-#
-# In accordance with the class policies and Georgetown's Honor Code,
-# I certify that, with the exceptions of the class resources and those
-# items noted below, I have neither given nor received any assistance
-# on this project.
-#
-
 from classifier import *
 from traintestsets import *
 
@@ -34,7 +22,6 @@ class BP(Classifier):
         self.emin = 0.1
         self.random = 0.3
         self.maxQ = 3000
-        self.threshhold = 0.5
 
     def __str__(self):
         output = super(BP, self).__str__()
@@ -47,26 +34,17 @@ class BP(Classifier):
 
     ## parse through command line options
     def setOptions(self, opts):
-        pass
-        p = '-p'
-        if p in opts:
-            next = opts.index(p) + 1
-            if next >= len(opts):
-                loadOptionsError(opts, "Missing argument for -p")
-            try:
-                self.p = float(opts[next])
-            except Exception:
-                loadOptionsError(opts, "Invalid argument for -p")
+        nextVal = getNextAsInt(validOption('-j', opts))
+        if nextVal:  # hidden nodes
+            self.j = nextVal + 1
 
-    ##
-    ## Classify
-    ##
+        nextVal = getNextAsFloat(validOption('-n', opts))
+        if nextVal:  # learning element
+            self.n = nextVal
 
-    ## predict outcome of a single example (test)
-    def classify(self, inst):
-        y = self.calcY(inst)
-        o = self.calcO(y)
-        return self.interpretO(o)
+        nextVal = getNextAsFloat(validOption('-e', opts))
+        if nextVal:  # Emin
+            self.emin = nextVal
 
     ##
     ## Train
@@ -97,6 +75,10 @@ class BP(Classifier):
             # quit if we've run too many epochs
             if q > self.maxQ:
                 raise RuntimeError("Failed to converge after {} epochs, with an error of {:.3f}".format(q, self.e))
+
+            ## printer, get rid of this later
+            if q % 10 == 0:
+                print q, self.e
 
             # increment
             q += 1
@@ -241,25 +223,12 @@ class BP(Classifier):
                 maxVInd = i
         return maxVInd
 
+    ##
+    ## Classify
+    ##
 
-##
-## Main
-##
-
-def main():
-    # try:
-        ds = TrainTestSets(sys.argv)
-        if len(ds.getTrainingSet().getExamples()) > 0:
-            if len(ds.getTestingSet().getExamples()) > 0:
-                Evaluator(BP()).evaluate(ds.getTrainingSet(), ds.getTestingSet())
-            else:
-                Evaluator(BP()).evaluate(ds.getTrainingSet())
-    # except Exception as e:
-    #     if len(e.args) == 1:
-    #         print e.args[0]
-    #     else:
-    #         print e.args[1]
-
-
-if __name__ == "__main__":
-    main()
+    ## predict outcome of a single example (test)
+    def classify(self, inst):
+        y = self.calcY(inst)
+        o = self.calcO(y)
+        return self.interpretO(o)

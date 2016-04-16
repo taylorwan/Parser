@@ -48,19 +48,48 @@ class Classifier(object):
 
 
 ## throw an error message with the correct syntax for options
-def loadOptionsError(self, opts, msg="Invalid Syntax"):
-    base = " [-t <path> [-T <path>]] [-x folds]"
-    knnSyntax = "kNN" + base + " [-k neighbors]"
-    nbSyntax = "NaiveBayes" + base
-    id3Syntax = "ID3" + base + " [-p proportion]"
-    bpSyntax = "BP" + base
-    if './kNN' in opts or 'knn.py' in opts:
+def loadOptionsError(opts, msg="Invalid Syntax. Valid commands:"):
+    base = "main.py "
+    options = " [-t <path> [-T <path>]]"
+    knnSyntax = base + "kNN" + options + " [-k neighbors] [-x folds]"
+    nbSyntax = base + "NaiveBayes" + options + " [-x folds]"
+    id3Syntax = base + "ID3" + options + " [-p proportion]"
+    bpSyntax = base + "BP" + options + " [-j hiddenNodes] [-p proportion] [-n learningRate]"
+    if 'kNN' in opts or 'knn' in opts:
         raise SyntaxError(msg + "\n" + knnSyntax)
-    elif './NaiveBayes' in opts or 'naivebayes.py' in opts:
+    elif 'NaiveBayes' in opts or 'naivebayes' in opts:
         raise SyntaxError(msg + "\n" + nbSyntax)
-    elif './ID3' in opts or 'id3.py' in opts:
+    elif 'ID3' in opts or 'id3' in opts:
         raise SyntaxError(msg + "\n" + id3Syntax)
-    elif './BP' in opts or 'bp.py' in opts:
+    elif 'BP' in opts or 'bp' in opts:
         raise SyntaxError(msg + "\n" + bpSyntax)
     else:
         raise SyntaxError(msg + "\n" + knnSyntax + "\n" + nbSyntax + "\n" + id3Syntax + "\n" + bpSyntax)
+
+
+# check if option is valid
+def validOption(o, opts):
+    if o in opts:
+        next = opts.index(o) + 1
+        if next >= len(opts):
+            loadOptionsError(opts, "Missing argument for " + o)
+        return [next, o, opts]
+    return [-1, o, opts]
+
+
+# get the value in the next index of opts as an int
+def getNextAsInt(next):
+    if next[0] > -1:
+        try:
+            return int(next[2][next[0]])
+        except:
+            loadOptionsError(opts, "Invalid argument for " + next[1])
+
+
+# get the value in the next index of opts as a float
+def getNextAsFloat(next):
+    if next[0] > -1:
+        try:
+            return float(next[2][next[0]])
+        except:
+            loadOptionsError(opts, "Invalid argument for " + next[1])

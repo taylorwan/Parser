@@ -89,8 +89,9 @@ class DataSet(object):
     def setSeed(self):
         self.seed = random.random()
 
-
-    ### ID3 ###
+    ##
+    ## ID3
+    ##
 
     ## create decision tree
     def train(self, node=None, attr=None, maj=None):
@@ -125,6 +126,8 @@ class DataSet(object):
 
     # # split along a certain attribute
     def split(self, a):
+        if isinstance(a, NumericAttribute):
+            raise RuntimeError(a.name + "is numeric. We do not currently handle splitting among numeric attributes.")
         ds = []
         attrName = a.getName()
         for i, v in enumerate(a.getDomain()):
@@ -218,7 +221,9 @@ class DataSet(object):
                 bestAttr = a
         return bestAttr
 
-    ### BP ###
+    ##
+    ## BP
+    ##
 
     ## translate the current attriutes to binary encoding
     def nominalToBinary(self):

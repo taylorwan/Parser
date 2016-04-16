@@ -5,9 +5,10 @@ from classifier import *
 
 
 class Evaluator(object):
-    def __init__(self, c, f=10):
+    def __init__(self, c):
         self.classifier = c
-        self.folds = f
+        self.folds = 10
+        self.p = 0.3
         self.performance = []
         self.avgPerf = -1
         self.accuracy = -1
@@ -29,25 +30,20 @@ class Evaluator(object):
 
     ## parse through command line options
     def setOptions(self, opts):
-        x = '-x'
-        if x in opts:
-            next = opts.index(x) + 1
-            if next >= len(opts):
-                loadOptionsError(opts, "Missing argument for -x")
-            self.folds = int(opts[next])
+        nextVal = getNextAsInt(validOption('-x', opts))
+        if nextVal:
+            self.folds = nextVal
 
-    ## calculate the average for a list of values
-    def avg(self, l):
-        return sum(l) / float(len(l))
+        nextVal = getNextAsFloat(validOption('-p', opts))
+        if nextVal:
+            self.p = nextVal
 
-    ## calculate the standard variation for a list of values
-    def std(self, l):
-        avg = self.avg(l)
-        var = sum([pow(x-avg, 2) for x in l])/float(len(l))
-        return math.sqrt(var)
+    ##
+    ## Dataset Splitting
+    ##
 
     ## partition the training data randomly to create our test set
-    def createTestSet(self, ds, offset=0):
+    def createCrossValidateTestSet(self, ds, offset=0):
         self.classifier.examples = DataSet(ds.getAttributes())
         self.classifier.instances = DataSet(ds.getAttributes())
 
@@ -68,7 +64,7 @@ class Evaluator(object):
             ds.setSeed()
 
     ## partition the training data and randomly hold out data
-    def holdOutTestSet(self, ds, p=.1):
+    def createHoldOutTestSet(self, ds):
         self.classifier.examples = DataSet(ds.getAttributes())
         self.classifier.instances = DataSet(ds.getAttributes())
 
@@ -77,7 +73,7 @@ class Evaluator(object):
         for ex in ds.getExamples():
             i = ds.getSeed()
 
-            if i > p:  # add to training set
+            if i > self.p:  # add to training set
                 self.classifier.examples.addExample(ex)
             else:  # add to test set
                 self.classifier.instances.addExample(ex)
@@ -85,23 +81,17 @@ class Evaluator(object):
             # choose a new random number
             ds.setSeed()
 
+    ##
+    ## Evaluate
+    ##
+
     def evaluate(self, ds, test=None):
-        self.holdOutEvaluate(ds, test)
-
-    # def evaluate2(self, ds):
-    #     # print "evaluate"
-    #     ds = ds.nominalToBinary()
-
-    #     self.createTestSet(ds)
-    #     while (len(self.classifier.getInstances().getExamples()) < 1):
-    #         self.createTestSet(ds)
-
-    #     self.classifier.train(ds)
-    #     self.performance.append(self.classifier.classifySet(ds).getAccuracy())
-
-    #     # # calculate and print our performance
-    #     self.avgPerf = self.performance[0]
-    #     print self
+        if self.classifier.type == 'Naive Bayes' or self.classifier.type == 'k-NN':
+            self.crossValidateEvaluate(ds, test)
+        elif self.classifier.type == 'ID3' or self.classifier.type == 'BP':
+            self.holdOutEvaluate(ds, test)
+        else:
+            raise RuntimeError('')
 
     ## evaluate the performance over our test sets using hold-out
     def holdOutEvaluate(self, ds, test=None):
@@ -114,9 +104,9 @@ class Evaluator(object):
         # otherwise, randomly create combinations of test sets and
         # training sets until our test set is not empty
         else:
-            self.holdOutTestSet(ds)
+            self.createHoldOutTestSet(ds)
             while (len(self.classifier.getInstances().getExamples()) < 1):
-                self.holdOutTestSet(ds)
+                self.createHoldOutTestSet(ds)
             self.classifier.train(ds)
             self.performance.append(self.classifier.classifySet(ds).getAccuracy())
 
@@ -142,12 +132,26 @@ class Evaluator(object):
         # training sets until our test set is not empty
         else:
             for i in range(self.folds):
-                self.createTestSet(ds, i)
+                self.createCrossValidateTestSet(ds, i)
                 while (len(self.classifier.getInstances().getExamples()) < 1):
-                    self.createTestSet(ds, i)
+                    self.createCrossValidateTestSet(ds, i)
                 self.performance.append(self.classifier.classifySet(ds).getAccuracy())
 
         # calculate and print our performance
         self.avgPerf = self.avg(self.performance)
         self.accuracy = self.std(self.performance)
         print self
+
+    ##
+    ## Helpers
+    ##
+
+    ## calculate the average for a list of values
+    def avg(self, l):
+        return sum(l) / float(len(l))
+
+    ## calculate the standard variation for a list of values
+    def std(self, l):
+        avg = self.avg(l)
+        var = sum([pow(x-avg, 2) for x in l])/float(len(l))
+        return math.sqrt(var)

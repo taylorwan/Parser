@@ -1,15 +1,3 @@
-#
-# Taylor Wan
-# tw476@georgetown.edu
-# Platform: OS X
-# Language/Environment: python
-#
-# In accordance with the class policies and Georgetown's Honor Code,
-# I certify that, with the exceptions of the class resources and those
-# items noted below, I have neither given nor received any assistance
-# on this project.
-#
-
 import operator
 from classifier import *
 from traintestsets import *
@@ -30,12 +18,9 @@ class kNN(Classifier):
 
     ## parse through command line options
     def setOptions(self, opts):
-        k = '-k'
-        if k in opts:
-            next = opts.index(k) + 1
-            if next >= len(opts):
-                loadOptionsError(opts, "Missing argument for -k")
-            self.k = int(opts[next])
+        nextVal = getNextAsInt(validOption('-k', opts))
+        if nextVal:
+            self.k = nextVal
 
     ## calculate the distance between two examples
     def calcDist(self, inst, ex):
@@ -78,23 +63,3 @@ class kNN(Classifier):
             results.append([self.calcDist(inst, ex), ex[-1]])
         neighbors = self.closestK(results)
         return self.calcVote(neighbors)
-
-
-## initialize and evaluate
-def main():
-    try:
-        ds = TrainTestSets(sys.argv)
-        if len(ds.getTrainingSet().getExamples()) > 0:
-            if len(ds.getTestingSet().getExamples()) > 0:
-                Evaluator(kNN()).evaluate(ds.getTrainingSet(), ds.getTestingSet())
-            else:
-                Evaluator(kNN()).evaluate(ds.getTrainingSet())
-    except Exception as e:
-        if len(e.args) == 1:
-            print e.args[0]
-        else:
-            print e.args[1]
-
-
-if __name__ == "__main__":
-    main()

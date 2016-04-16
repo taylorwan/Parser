@@ -1,15 +1,3 @@
-#
-# Taylor Wan
-# tw476@georgetown.edu
-# Platform: OS X
-# Language/Environment: python
-#
-# In accordance with the class policies and Georgetown's Honor Code,
-# I certify that, with the exceptions of the class resources and those
-# items noted below, I have neither given nor received any assistance
-# on this project.
-#
-
 from classifier import *
 from traintestsets import *
 
@@ -24,31 +12,6 @@ class NaiveBayes(Classifier):
 
     def __repr__(self):
         return self.__str__()
-
-    ## predict outcome of a single example (test)
-    def classify(self, inst):
-
-        # initialize helpers:
-        # - attributes for the current data set
-        # - domain of the class index of the current data set
-        # - data structure to track tallies
-        attrs = self.examples.getAttributes().getAttributes()
-        domain = self.examples.getAttributes().getClassAttribute().getDomain()
-        counts = []
-
-        # iterate through observations
-        for i, a in enumerate(attrs):
-            # class index
-            if i == len(attrs)-1:
-                counts.append(self.countClass(domain))
-            # nominal values
-            elif isinstance(a, NominalAttribute):
-                counts.append(self.countNominal(inst, i, domain))
-            # ignore numeric values
-
-        # calculate and return the index with the highest probability
-        p = self.calcP(counts, domain)
-        return self.calcVote(p)
 
     ## calculate probabilities based on tallied data
     def calcP(self, counts, d):
@@ -92,22 +55,27 @@ class NaiveBayes(Classifier):
             vals[ex[-1]] += 1
         return vals
 
+    ## predict outcome of a single example (test)
+    def classify(self, inst):
 
-## initialize and evaluate
-def main():
-    try:
-        ds = TrainTestSets(sys.argv)
-        if len(ds.getTrainingSet().getExamples()) > 0:
-            if len(ds.getTestingSet().getExamples()) > 0:
-                Evaluator(NaiveBayes()).evaluate(ds.getTrainingSet(), ds.getTestingSet())
-            else:
-                Evaluator(NaiveBayes()).evaluate(ds.getTrainingSet())
-    except Exception as e:
-        if len(e.args) == 1:
-            print e.args[0]
-        else:
-            print e.args[1]
+        # initialize helpers:
+        # - attributes for the current data set
+        # - domain of the class index of the current data set
+        # - data structure to track tallies
+        attrs = self.examples.getAttributes().getAttributes()
+        domain = self.examples.getAttributes().getClassAttribute().getDomain()
+        counts = []
 
+        # iterate through observations
+        for i, a in enumerate(attrs):
+            # class index
+            if i == len(attrs)-1:
+                counts.append(self.countClass(domain))
+            # nominal values
+            elif isinstance(a, NominalAttribute):
+                counts.append(self.countNominal(inst, i, domain))
+            # ignore numeric values
 
-if __name__ == "__main__":
-    main()
+        # calculate and return the index with the highest probability
+        p = self.calcP(counts, domain)
+        return self.calcVote(p)
