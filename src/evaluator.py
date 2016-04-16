@@ -91,7 +91,7 @@ class Evaluator(object):
         elif self.classifier.type == 'ID3' or self.classifier.type == 'BP':
             self.holdOutEvaluate(ds, test)
         else:
-            raise RuntimeError('')
+            raise RuntimeError('Invalid classifier: ' + self.classifier.type)
 
     ## evaluate the performance over our test sets using hold-out
     def holdOutEvaluate(self, ds, test=None):

@@ -5,7 +5,6 @@ from traintestsets import *
 class ID3(Classifier):
     def __init__(self, e=DataSet(), i=DataSet(), root=Node(), p=.1):
         super(ID3, self).__init__(e, i)
-        self.setOptions(sys.argv[1:])
         self.type = 'ID3'
 
     def __str__(self):
@@ -24,7 +23,6 @@ class ID3(Classifier):
                 perf += 1
         avgPerf = perf * 100.0 / len(self.instances.getExamples())
         return Performance(avgPerf)
-
 
     ## predict outcome of a single example (test)
     def classify(self, inst, root):
