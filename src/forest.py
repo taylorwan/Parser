@@ -5,11 +5,12 @@ from id3 import *
 
 
 class Forest(Classifier):
-    def __init__(self, e=DataSet(), i=DataSet(), trees=[], m=3, sz=10):
+    def __init__(self, e=DataSet(), i=DataSet(), trees=[], m=3, maxN=100):
         super(Forest, self).__init__(e, i)
         self.trees = trees
         self.m = m
-        self.sz = sz
+        self.sz = 10
+        self.maxN = maxN
         self.type = 'Random Forest'
 
     def __str__(self):
@@ -28,6 +29,10 @@ class Forest(Classifier):
             else:
                 self.m = nextVal + 1
 
+        nextVal = getNextAsInt(validOption('-n', opts))
+        if nextVal:
+            self.maxN = nextVal
+
     # create m trees
     def train(self, ds):
         for i in range(self.m):
@@ -37,12 +42,18 @@ class Forest(Classifier):
     def createTree(self, ds):
         self.sz = self.initSize(ds)
         d = self.createSubSet(ds)
-        self.trees.append(ID3(d).train())
+        try:  # in the case of a difficult dataset
+            self.trees.append(ID3(d).train())
+        except:
+            self.classifySet(ds)
 
     # generate a random size, with an upper bound of 0.6 the size of ds
     def initSize(self, ds):
         rand = self.random(ds)
-        return int(len(ds.getExamples())*0.2 + rand*0.6)
+        n = int(len(ds.getExamples())*0.2 + rand*0.6)
+        while n > self.maxN:
+            n = n/2
+        return n
 
     # creates a random subset
     def createSubSet(self, ds):

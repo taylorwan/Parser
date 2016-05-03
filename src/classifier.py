@@ -55,6 +55,7 @@ def loadOptionsError(opts, msg="Invalid Syntax. Valid commands:"):
     nbSyntax = base + "NaiveBayes" + options + " [-x folds]"
     id3Syntax = base + "ID3" + options + " [-p proportion]"
     bpSyntax = base + "BP" + options + " [-j hiddenNodes] [-p proportion] [-n learningRate]"
+    forestSyntax = base + "Forest" + options + " [-m trees] [-n maxSetSize]"
     if 'kNN' in opts or 'knn' in opts:
         raise SyntaxError(msg + "\n" + knnSyntax)
     elif 'NaiveBayes' in opts or 'naivebayes' in opts:
@@ -63,8 +64,10 @@ def loadOptionsError(opts, msg="Invalid Syntax. Valid commands:"):
         raise SyntaxError(msg + "\n" + id3Syntax)
     elif 'BP' in opts or 'bp' in opts:
         raise SyntaxError(msg + "\n" + bpSyntax)
+    elif 'Forest' in opts or 'forest' in opts:
+        raise SyntaxError(msg + "\n" + forestSyntax)
     else:
-        raise SyntaxError(msg + "\n" + knnSyntax + "\n" + nbSyntax + "\n" + id3Syntax + "\n" + bpSyntax)
+        raise SyntaxError(msg + "\n" + knnSyntax + "\n" + nbSyntax + "\n" + id3Syntax + "\n" + bpSyntax + "\n" + forestSyntax)
 
 
 # check if option is valid
