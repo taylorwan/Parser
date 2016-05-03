@@ -134,6 +134,7 @@ class Evaluator(object):
                 self.createCrossValidateTestSet(ds, i)
                 while (len(self.classifier.getInstances().getExamples()) < 1):
                     self.createCrossValidateTestSet(ds, i)
+                self.classifier.train(ds)
                 self.performance.append(self.classifier.classifySet(ds).getAccuracy())
 
         # calculate and print our performance
