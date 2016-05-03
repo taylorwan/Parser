@@ -14,11 +14,12 @@ from naivebayes import *
 from knn import *
 from id3 import *
 from bp import *
+from forest import *
 
 
 ## initialize and evaluate
 def main():
-    try:
+    # try:
         opts = sys.argv
         c = None  # classifier
         cInd = 1
@@ -31,6 +32,8 @@ def main():
             c = ID3()
         elif 'BP' == opts[cInd] or 'bp' == opts[cInd]:
             c = BP()
+        elif 'Forest' == opts[cInd] or 'forest' == opts[cInd]:
+            c = Forest()
         else:
             loadOptionsError(opts, "Invalid classifier")
         ds = TrainTestSets(opts)
@@ -40,11 +43,11 @@ def main():
             else:
                 Evaluator(c).evaluate(ds.getTrainingSet())
 
-    except Exception as e:
-        if len(e.args) == 1:
-            print e.args[0]
-        else:
-            print e.args[1]
+    # except Exception as e:
+    #     if len(e.args) == 1:
+    #         print e.args[0]
+    #     else:
+    #         print e.args[1]
 
 
 if __name__ == "__main__":

@@ -49,6 +49,9 @@ class DataSet(object):
         with open(filename) as f:
             return self.parse(f.read())
 
+    def isEmpty(self):
+        return len(self.examples) == 0
+
     ## determine whether type a line in a dataset file is a:
     ## - dataset header
     ## - attribute declaration
@@ -122,6 +125,7 @@ class DataSet(object):
 
         n.setChildren(children)
 
+        # printTree(n)
         return n
 
     # # split along a certain attribute
@@ -309,3 +313,10 @@ class DataSet(object):
         while len(s) < b:
             s = "0" + s
         return s
+
+
+def printTree(n, tabs=0):
+    t = n
+    print "\t" * tabs + str(t)
+    for c in t.children:
+        printTree(c, tabs+1)

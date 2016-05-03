@@ -86,12 +86,10 @@ class Evaluator(object):
     ##
 
     def evaluate(self, ds, test=None):
-        if self.classifier.type == 'Naive Bayes' or self.classifier.type == 'k-NN':
-            self.crossValidateEvaluate(ds, test)
-        elif self.classifier.type == 'ID3' or self.classifier.type == 'BP':
+        if 'holdout' in sys.argv:
             self.holdOutEvaluate(ds, test)
         else:
-            raise RuntimeError('Invalid classifier: ' + self.classifier.type)
+            self.crossValidateEvaluate(ds, test)
 
     ## evaluate the performance over our test sets using hold-out
     def holdOutEvaluate(self, ds, test=None):
